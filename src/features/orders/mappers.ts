@@ -105,6 +105,7 @@ export function mapOrderRecord(
       orderItemId: item.id,
       productId: item.productId,
       sku: item.sku,
+      unit: item.unit,
       name: item.productName,
       quantity: item.quantity,
       packed: item.checked,

@@ -13,6 +13,8 @@ export type ParsedOrderItem = {
   name: string;
   quantity: number;
   quantityText: string;
+  sku?: string;
+  unit?: string;
   confidence: number;
 };
 

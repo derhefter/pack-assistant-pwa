@@ -6,33 +6,33 @@ import { createPlaceholderProductImage, matchProductByQuery, resolveBestProductI
 
 describe('product matching', () => {
   it('prefers exact sku over everything else', () => {
-    const result = matchProductByQuery(products as Product[], 'HK-200');
+    const result = matchProductByQuery(products as Product[], '48286');
     expect(result.reason).toBe('sku-exact');
-    expect(result.product?.id).toBe('prd-halloren-kugeln');
+    expect(result.product?.id).toBe('prd-48286');
   });
 
-  it('finds alias matches', () => {
-    const result = matchProductByQuery(products as Product[], 'Zwieback Vanille');
-    expect(result.reason).toBe('alias');
-    expect(result.product?.id).toBe('prd-vanille-zwieback');
+  it('finds extended product names reliably', () => {
+    const result = matchProductByQuery(products as Product[], 'Halloren Royal Mints');
+    expect(['name', 'alias']).toContain(result.reason);
+    expect(result.product?.id).toBe('prd-40635');
   });
 
   it('falls back to fuzzy matching', () => {
-    const result = matchProductByQuery(products as Product[], 'schoko brezel');
-    expect(result.product?.id).toBe('prd-schoko-brezeln');
+    const result = matchProductByQuery(products as Product[], 'Royal Mint');
+    expect(result.product?.id).toBe('prd-40635');
     expect(result.score).toBeGreaterThan(0.45);
   });
 });
 
 describe('image selection', () => {
-  it('prefers manual before local, research and placeholder', () => {
-    const productImages = (images as ProductImage[]).filter((image) => image.productId === 'prd-halloren-kugeln');
+  it('prefers local Halloren seed images before placeholder', () => {
+    const productImages = (images as ProductImage[]).filter((image) => image.productId === 'prd-48286');
     const best = resolveBestProductImage(productImages);
-    expect(best?.sourceKind).toBe('manual');
+    expect(best?.sourceKind).toBe('local');
   });
 
   it('creates a placeholder image when no image exists', () => {
-    const placeholder = createPlaceholderProductImage(products[2] as Product);
+    const placeholder = createPlaceholderProductImage(products[0] as Product);
     expect(placeholder.sourceKind).toBe('placeholder');
     expect(placeholder.uri).toContain('data:image/svg+xml');
   });

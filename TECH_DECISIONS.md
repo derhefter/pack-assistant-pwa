@@ -38,3 +38,15 @@
 - Empfehlung: keine externen HTTP-Bildquellen im MVP
 - Grund: Remote-Bilder brechen das Offline-Versprechen
 - Umsetzung: Seed-Bilder als lokale SVG-Assets unter `public/seed`
+
+## 8. Halloren-Import ist SKU-first, nicht Name-first
+
+- Empfehlung: bei Packlisten zuerst ueber Artikelnummer matchen
+- Grund: SKU ist stabiler als OCR-Name und sichert Bild- und Produktzuordnung
+- Umsetzung: Parser extrahiert `sku` getrennt, Auftragserstellung matched erst SKU, dann Name/Alias
+
+## 9. Mobile Karten bleiben einzeilig lesbar
+
+- Empfehlung: auf kleinen Displays horizontale Karten statt hoher Bildkacheln
+- Grund: mehr Produkte gleichzeitig sichtbar, weniger Scrollen, weniger Ueberforderung
+- Umsetzung: unter `640px` Bild links, Text rechts, Buttons in einer klaren Aktionszeile

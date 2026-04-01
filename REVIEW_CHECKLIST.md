@@ -6,6 +6,8 @@
 - Importiert Foto?
 - Greift manueller Text-Fallback?
 - Werden Positionen korrekt geparst?
+- Werden bei Halloren-Listen Artikelnummer und Menge sauber getrennt?
+- Werden Detailzeilen wie `Beutel`, Gewichte und Zahlungsinfos ignoriert?
 - Funktioniert Matching gegen SKU, Name, Alias?
 - Wird Audio korrekt formatiert?
 - Laesst sich ein Artikel per Tap abhaken?
@@ -27,6 +29,7 @@
 - Ist der Fehlerzustand verstaendlich?
 - Ist die App auch mit geringer Lesekompetenz bedienbar?
 - Sind Audio-Saetze kurz und immer gleich aufgebaut?
+- Sind Produktkarten auf dem Handy als klare Zeilenkarten nutzbar?
 
 ## Technik
 

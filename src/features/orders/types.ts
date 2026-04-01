@@ -5,6 +5,7 @@ export type OrderItemCard = {
   orderItemId: string;
   productId?: string;
   sku?: string;
+  unit?: string;
   name: string;
   quantity: number;
   packed: boolean;

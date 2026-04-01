@@ -15,7 +15,7 @@ export async function extractTextFromImage(file: File): Promise<TextExtractionRe
   } catch (error) {
     throw new ImportError(
       'OCR_EXTRACTION_FAILED',
-      error instanceof Error ? error.message : 'OCR konnte nicht ausgeführt werden.'
+      error instanceof Error ? error.message : 'OCR konnte nicht ausgefuehrt werden.'
     );
   }
 }

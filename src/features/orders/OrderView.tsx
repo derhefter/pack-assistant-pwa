@@ -43,12 +43,17 @@ export function OrderView({ order, onToggleItem, onArchive, onCaptureImage }: Pr
               onClick={() => onToggleItem(item.orderItemId)}
             >
               <div className="product-card__image">
+                <span className="product-card__badge">
+                  {item.quantity}
+                  {item.unit ? ` ${item.unit}` : ' x'}
+                </span>
                 <img src={item.imageUrl} alt={item.imageAlt} />
               </div>
               <div className="product-card__body">
+                {item.sku ? <span className="product-card__sku">Art.-Nr. {item.sku}</span> : null}
                 <strong>{item.name}</strong>
                 <span className="product-card__qty">
-                  {item.quantity} mal {item.packed ? 'Bereits gepackt' : 'Noch offen'}
+                  {item.packed ? 'Bereits gepackt' : 'Noch offen'}
                 </span>
               </div>
             </button>

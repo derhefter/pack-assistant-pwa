@@ -23,6 +23,7 @@ import { createOrderDraftFromImport, parseOrderText } from '../features/import';
 import { ArchiveView } from '../features/archive/ArchiveView';
 import { mapOrderRecord } from '../features/orders/mappers';
 import { OrderView } from '../features/orders/OrderView';
+import { normalizeSku } from '../lib/domain';
 import { prepareCapturedImage } from '../lib/imageCapture';
 import type { ImportMode, OrderRecord } from '../features/orders/types';
 
@@ -36,7 +37,9 @@ export function App() {
   const [archive, setArchive] = useState<OrderRecord[]>([]);
   const [message, setMessage] = useState<string | null>('Bereit fuer den ersten Auftrag.');
   const [error, setError] = useState<string | null>(null);
-  const [manualText, setManualText] = useState('3 mal Halloren Kugeln\n2 mal Schoko Brezeln');
+  const [manualText, setManualText] = useState(
+    "48286 Halloren Chocolate Thins Pistazie 1\n12229 Apfel Zimt-Halloren O's 2"
+  );
   const [archiveSearch, setArchiveSearch] = useState('');
   const [isReady, setIsReady] = useState(false);
   const [isBusy, setIsBusy] = useState(false);
@@ -49,10 +52,7 @@ export function App() {
       listProductImages()
     ]);
 
-    const current =
-      activeOrders.find((order) => order.id === preferredOrderId) ??
-      activeOrders[0] ??
-      null;
+    const current = activeOrders.find((order) => order.id === preferredOrderId) ?? activeOrders[0] ?? null;
 
     if (current) {
       const items = await listOrderItems(current.id);
@@ -96,7 +96,14 @@ export function App() {
     source: 'pdf' | 'photo' | 'manual',
     sourceFileName: string,
     sourceMimeType: string,
-    rawItems: Array<{ rawText: string; name: string; quantity: number; confidence?: number }>
+    rawItems: Array<{
+      rawText: string;
+      name: string;
+      quantity: number;
+      sku?: string;
+      unit?: string;
+      confidence?: number;
+    }>
   ) {
     const [products, aliases] = await Promise.all([listProducts(), listProductAliases()]);
     const { order } = await createOrderWithItems({
@@ -105,10 +112,13 @@ export function App() {
       sourceFileName,
       sourceMimeType,
       items: rawItems.map((item, index) => {
-        const match = matchProductCandidate(item.name, products, aliases);
-        const matchedProduct = match
-          ? products.find((product) => product.id === match.productId)
+        const matchedBySku = item.sku
+          ? products.find((product) => normalizeSku(product.sku) === normalizeSku(item.sku ?? ''))
           : undefined;
+        const match = matchedBySku ? undefined : matchProductCandidate(item.name, products, aliases);
+        const matchedProduct =
+          matchedBySku ??
+          (match ? products.find((product) => product.id === match.productId) : undefined);
 
         return {
           rawText: item.rawText,
@@ -116,7 +126,8 @@ export function App() {
           quantity: item.quantity,
           lineNumber: index + 1,
           productId: matchedProduct?.id,
-          sku: matchedProduct?.sku,
+          sku: matchedProduct?.sku ?? item.sku,
+          unit: item.unit,
           confidence: item.confidence
         };
       })
@@ -143,8 +154,8 @@ export function App() {
         file.type || 'application/octet-stream',
         draft.items
       );
-    } catch (error) {
-      const text = error instanceof Error ? error.message : 'Import fehlgeschlagen.';
+    } catch (nextError) {
+      const text = nextError instanceof Error ? nextError.message : 'Import fehlgeschlagen.';
       setError(text);
       setMessage(null);
       setScreen('start');
@@ -156,9 +167,7 @@ export function App() {
   const handleImportFromInput = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null;
     const mode =
-      file?.type === 'application/pdf' || file?.name.toLowerCase().endsWith('.pdf')
-        ? 'pdf'
-        : 'photo';
+      file?.type === 'application/pdf' || file?.name.toLowerCase().endsWith('.pdf') ? 'pdf' : 'photo';
     void handleImport(mode, file);
     event.target.value = '';
   };
@@ -189,7 +198,9 @@ export function App() {
   };
 
   const handleArchiveCurrent = async () => {
-    if (!currentOrder) return;
+    if (!currentOrder) {
+      return;
+    }
 
     await archiveOrder(currentOrder.id);
     await refreshWorkspace();
@@ -215,8 +226,8 @@ export function App() {
     }
 
     const preparedImage = await prepareCapturedImage(file);
-
     const existingBest = await getBestProductImage(item.productId);
+
     await linkImageToProduct(item.productId, {
       source: 'manual',
       url: preparedImage.dataUrl,
@@ -254,11 +265,13 @@ export function App() {
     <main className="app-shell">
       <section className="hero">
         <div>
+          <div className="hero-brand">
+            <img src="/brand/logo-halloren.png" alt="Halloren Logo" className="hero-brand__logo" />
+            <span className="hero-brand__tag">Halloren</span>
+          </div>
           <span className="eyebrow">Pack-Assistent</span>
           <h1>Gross, visuell, offline-first.</h1>
-          <p>
-            Weniger lesen. Mehr sehen. Ein Tap pro Artikel. Audio sagt, was zu tun ist.
-          </p>
+          <p>Weniger lesen. Mehr sehen. Ein Tap pro Artikel. Audio sagt, was zu tun ist.</p>
         </div>
 
         <div className="hero-actions">
@@ -331,7 +344,7 @@ export function App() {
               <textarea
                 rows={5}
                 value={manualText}
-                placeholder="3 mal Halloren Kugeln&#10;2 mal Schoko Brezeln"
+                placeholder={"48286 Halloren Chocolate Thins Pistazie 1\n12229 Apfel Zimt-Halloren O's 2"}
                 onChange={(event) => setManualText(event.target.value)}
               />
             </label>

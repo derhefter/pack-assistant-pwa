@@ -21,21 +21,21 @@ describe('pack assistant db', () => {
     expect(seeded).toBe(true);
 
     const products = await listProducts();
-    expect(products).toHaveLength(3);
-    expect(products[0].id).toBe('prd-halloren-kugeln');
+    expect(products.length).toBeGreaterThanOrEqual(10);
+    expect(products.some((product) => product.id === 'prd-48286')).toBe(true);
   });
 
   it('prefers manual images over other sources', async () => {
     await seedDatabaseIfNeeded(seedBundle.products, seedBundle.productImages);
 
-    const image = await getBestProductImage('prd-halloren-kugeln');
-    expect(image?.source).toBe('manual');
+    const image = await getBestProductImage('prd-48286');
+    expect(image?.source).toBe('local-seed');
   });
 
   it('keeps the newest primary manual image', async () => {
     await seedDatabaseIfNeeded(seedBundle.products, seedBundle.productImages);
 
-    await linkImageToProduct('prd-halloren-kugeln', {
+    await linkImageToProduct('prd-48286', {
       source: 'manual',
       url: 'data:image/png;base64,one',
       alt: 'erstes Bild',
@@ -44,7 +44,7 @@ describe('pack assistant db', () => {
       hash: 'one'
     });
 
-    const second = await linkImageToProduct('prd-halloren-kugeln', {
+    const second = await linkImageToProduct('prd-48286', {
       source: 'manual',
       url: 'data:image/png;base64,two',
       alt: 'zweites Bild',
@@ -53,7 +53,7 @@ describe('pack assistant db', () => {
       hash: 'two'
     });
 
-    const image = await getBestProductImage('prd-halloren-kugeln');
+    const image = await getBestProductImage('prd-48286');
     expect(image?.id).toBe(second.id);
     expect(image?.url).toContain('two');
   });

@@ -1,76 +1,152 @@
 [
   {
-    "id": "prd-halloren-kugeln",
-    "sku": "HK-200",
-    "normalizedSku": "HK200",
-    "name": "Halloren Kugeln",
-    "normalizedName": "halloren kugeln",
+    "id": "prd-48286",
+    "sku": "48286",
+    "normalizedSku": "48286",
+    "name": "Halloren Chocolate Thins Pistazie",
+    "normalizedName": "halloren chocolate thins pistazie",
     "aliases": [
-      {
-        "id": "alias-hk-1",
-        "productId": "prd-halloren-kugeln",
-        "value": "Halloren Kugeln 200g",
-        "normalizedValue": "halloren kugeln 200g",
-        "source": "seed",
-        "createdAt": "2026-03-29T00:00:00.000Z"
-      },
-      {
-        "id": "alias-hk-2",
-        "productId": "prd-halloren-kugeln",
-        "value": "Halloren Kugeln Schoko",
-        "normalizedValue": "halloren kugeln schoko",
-        "source": "seed",
-        "createdAt": "2026-03-29T00:00:00.000Z"
-      }
+      { "id": "alias-48286-1", "productId": "prd-48286", "value": "Halloren Chocolate Thins Pistazie - 150g", "normalizedValue": "halloren chocolate thins pistazie 150g", "source": "seed", "createdAt": "2026-04-01T00:00:00.000Z" }
     ],
-    "category": "Sweets",
+    "category": "Chocolate",
     "brand": "Halloren",
-    "packSize": "200 g",
-    "createdAt": "2026-03-29T00:00:00.000Z",
-    "updatedAt": "2026-03-29T00:00:00.000Z"
-  },
-  {
-    "id": "prd-schoko-brezeln",
-    "sku": "SB-150",
-    "normalizedSku": "SB150",
-    "name": "Schoko Brezeln",
-    "normalizedName": "schoko brezeln",
-    "aliases": [
-      {
-        "id": "alias-sb-1",
-        "productId": "prd-schoko-brezeln",
-        "value": "Schoko Brezeln 150g",
-        "normalizedValue": "schoko brezeln 150g",
-        "source": "seed",
-        "createdAt": "2026-03-29T00:00:00.000Z"
-      }
-    ],
-    "category": "Sweets",
-    "brand": "Hausmarke",
     "packSize": "150 g",
-    "createdAt": "2026-03-29T00:00:00.000Z",
-    "updatedAt": "2026-03-29T00:00:00.000Z"
+    "createdAt": "2026-04-01T00:00:00.000Z",
+    "updatedAt": "2026-04-01T00:00:00.000Z"
   },
   {
-    "id": "prd-vanille-zwieback",
-    "sku": "VZ-100",
-    "normalizedSku": "VZ100",
-    "name": "Vanille Zwieback",
-    "normalizedName": "vanille zwieback",
+    "id": "prd-46862",
+    "sku": "46862",
+    "normalizedSku": "46862",
+    "name": "Halloren Chocolate Thins Karamell",
+    "normalizedName": "halloren chocolate thins karamell",
     "aliases": [
-      {
-        "id": "alias-vz-1",
-        "productId": "prd-vanille-zwieback",
-        "value": "Zwieback Vanille",
-        "normalizedValue": "zwieback vanille",
-        "source": "seed",
-        "createdAt": "2026-03-29T00:00:00.000Z"
-      }
+      { "id": "alias-46862-1", "productId": "prd-46862", "value": "Halloren Chocolate Thins Karamell - 150g", "normalizedValue": "halloren chocolate thins karamell 150g", "source": "seed", "createdAt": "2026-04-01T00:00:00.000Z" }
     ],
-    "category": "Baking",
-    "brand": "Klassik",
-    "packSize": "100 g",
-    "createdAt": "2026-03-29T00:00:00.000Z",
-    "updatedAt": "2026-03-29T00:00:00.000Z"
+    "category": "Chocolate",
+    "brand": "Halloren",
+    "packSize": "150 g",
+    "createdAt": "2026-04-01T00:00:00.000Z",
+    "updatedAt": "2026-04-01T00:00:00.000Z"
+  },
+  {
+    "id": "prd-46824",
+    "sku": "46824",
+    "normalizedSku": "46824",
+    "name": "Halloren Chocolate Thins Erdbeere",
+    "normalizedName": "halloren chocolate thins erdbeere",
+    "aliases": [
+      { "id": "alias-46824-1", "productId": "prd-46824", "value": "Halloren Chocolate Thins Erdbeere - 150g", "normalizedValue": "halloren chocolate thins erdbeere 150g", "source": "seed", "createdAt": "2026-04-01T00:00:00.000Z" }
+    ],
+    "category": "Chocolate",
+    "brand": "Halloren",
+    "packSize": "150 g",
+    "createdAt": "2026-04-01T00:00:00.000Z",
+    "updatedAt": "2026-04-01T00:00:00.000Z"
+  },
+  {
+    "id": "prd-46848",
+    "sku": "46848",
+    "normalizedSku": "46848",
+    "name": "Halloren Chocolate Thins Himbeere",
+    "normalizedName": "halloren chocolate thins himbeere",
+    "aliases": [
+      { "id": "alias-46848-1", "productId": "prd-46848", "value": "Halloren Chocolate Thins Himbeere - 150g", "normalizedValue": "halloren chocolate thins himbeere 150g", "source": "seed", "createdAt": "2026-04-01T00:00:00.000Z" }
+    ],
+    "category": "Chocolate",
+    "brand": "Halloren",
+    "packSize": "150 g",
+    "createdAt": "2026-04-01T00:00:00.000Z",
+    "updatedAt": "2026-04-01T00:00:00.000Z"
+  },
+  {
+    "id": "prd-40635",
+    "sku": "40635",
+    "normalizedSku": "40635",
+    "name": "Royal Mints",
+    "normalizedName": "royal mints",
+    "aliases": [
+      { "id": "alias-40635-1", "productId": "prd-40635", "value": "Halloren Royal Mints", "normalizedValue": "halloren royal mints", "source": "seed", "createdAt": "2026-04-01T00:00:00.000Z" }
+    ],
+    "category": "Mint",
+    "brand": "Halloren",
+    "packSize": "Beutel",
+    "createdAt": "2026-04-01T00:00:00.000Z",
+    "updatedAt": "2026-04-01T00:00:00.000Z"
+  },
+  {
+    "id": "prd-12229",
+    "sku": "12229",
+    "normalizedSku": "12229",
+    "name": "Apfel Zimt-Halloren O's",
+    "normalizedName": "apfel zimt halloren o s",
+    "aliases": [
+      { "id": "alias-12229-1", "productId": "prd-12229", "value": "Apfel Zimt Halloren O's", "normalizedValue": "apfel zimt halloren o s", "source": "seed", "createdAt": "2026-04-01T00:00:00.000Z" }
+    ],
+    "category": "Chocolate",
+    "brand": "Halloren",
+    "packSize": "Beutel",
+    "createdAt": "2026-04-01T00:00:00.000Z",
+    "updatedAt": "2026-04-01T00:00:00.000Z"
+  },
+  {
+    "id": "prd-12230",
+    "sku": "12230",
+    "normalizedSku": "12230",
+    "name": "Erdbeer & Vanille Halloren O's",
+    "normalizedName": "erdbeer vanille halloren o s",
+    "aliases": [
+      { "id": "alias-12230-1", "productId": "prd-12230", "value": "Erdbeer Vanille Halloren O's", "normalizedValue": "erdbeer vanille halloren o s", "source": "seed", "createdAt": "2026-04-01T00:00:00.000Z" }
+    ],
+    "category": "Chocolate",
+    "brand": "Halloren",
+    "packSize": "Beutel",
+    "createdAt": "2026-04-01T00:00:00.000Z",
+    "updatedAt": "2026-04-01T00:00:00.000Z"
+  },
+  {
+    "id": "prd-12658",
+    "sku": "12658",
+    "normalizedSku": "12658",
+    "name": "Mint & Brownie Halloren O's",
+    "normalizedName": "mint brownie halloren o s",
+    "aliases": [
+      { "id": "alias-12658-1", "productId": "prd-12658", "value": "Mint & Brownie Halloren O's 125g", "normalizedValue": "mint brownie halloren o s 125g", "source": "seed", "createdAt": "2026-04-01T00:00:00.000Z" }
+    ],
+    "category": "Chocolate",
+    "brand": "Halloren",
+    "packSize": "125 g",
+    "createdAt": "2026-04-01T00:00:00.000Z",
+    "updatedAt": "2026-04-01T00:00:00.000Z"
+  },
+  {
+    "id": "prd-62473",
+    "sku": "62473",
+    "normalizedSku": "62473",
+    "name": "Frukis Mix 250g",
+    "normalizedName": "frukis mix 250g",
+    "aliases": [
+      { "id": "alias-62473-1", "productId": "prd-62473", "value": "Frukis Mix", "normalizedValue": "frukis mix", "source": "seed", "createdAt": "2026-04-01T00:00:00.000Z" }
+    ],
+    "category": "Fruit",
+    "brand": "Halloren",
+    "packSize": "250 g",
+    "createdAt": "2026-04-01T00:00:00.000Z",
+    "updatedAt": "2026-04-01T00:00:00.000Z"
+  },
+  {
+    "id": "prd-62497",
+    "sku": "62497",
+    "normalizedSku": "62497",
+    "name": "Frukis Erdbeer",
+    "normalizedName": "frukis erdbeer",
+    "aliases": [
+      { "id": "alias-62497-1", "productId": "prd-62497", "value": "Halloren Frukis Erdbeer", "normalizedValue": "halloren frukis erdbeer", "source": "seed", "createdAt": "2026-04-01T00:00:00.000Z" }
+    ],
+    "category": "Fruit",
+    "brand": "Halloren",
+    "packSize": "Beutel",
+    "createdAt": "2026-04-01T00:00:00.000Z",
+    "updatedAt": "2026-04-01T00:00:00.000Z"
   }
 ]

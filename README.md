@@ -95,3 +95,7 @@ Direkt nachgebessert im Review:
 - eindeutige Primaerbild-Regel bei mehrfachen manuellen Bildern
 - Bildkomprimierung fuer einfachere Geraete
 - echte offlinefaehige Seed-Bilder statt toter Remote-/Platzhalterpfade
+- Halloren-Seeds mit echten SKU-Bildern aus `public/catalog`
+- Import-Regel fuer Halloren-Listen: `Position | Artikelnummer | Produkt | Menge`
+- Detailzeilen wie `Beutel`, Gewichte und Zahlungsinfos werden beim Parsing verworfen
+- Mobilansicht der Produktkarten: Bild links, Text rechts, Aktionen darunter
