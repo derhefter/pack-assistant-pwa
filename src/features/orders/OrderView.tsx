@@ -31,11 +31,11 @@ export function OrderView({ order, onToggleItem, onArchive, onCaptureImage }: Pr
       </header>
 
       <div className="order-grid">
-        {order.items.map((item) => (
-          <article
-            key={item.id}
-            className={`product-card ${item.packed ? 'product-card--done' : ''}`.trim()}
-          >
+        {order.items.map((item) => {
+          const hasCaptureAction = Boolean(item.productId && item.imageSource === 'placeholder');
+
+          return (
+            <article key={item.id} className={`product-card ${item.packed ? 'product-card--done' : ''}`.trim()}>
             <button
               type="button"
               className="product-card__toggle"
@@ -58,7 +58,11 @@ export function OrderView({ order, onToggleItem, onArchive, onCaptureImage }: Pr
               </div>
             </button>
 
-            <div className="product-card__actions">
+              <div
+                className={`product-card__actions ${
+                  hasCaptureAction ? 'product-card__actions--double' : 'product-card__actions--single'
+                }`.trim()}
+              >
               <BigButton
                 variant="ghost"
                 disabled={!speech.supported}
@@ -67,7 +71,7 @@ export function OrderView({ order, onToggleItem, onArchive, onCaptureImage }: Pr
                 Vorlesen
               </BigButton>
 
-              {item.productId && item.imageSource === 'placeholder' ? (
+                {hasCaptureAction ? (
                 <>
                   <input
                     ref={(node) => {
@@ -94,8 +98,9 @@ export function OrderView({ order, onToggleItem, onArchive, onCaptureImage }: Pr
                 </>
               ) : null}
             </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import {
   TextExtractor
 } from '../../lib/import-types';
 import { buildImportSource } from './fileType';
+import { hardenHallorenImageItems } from './hallorenCatalog';
 import { extractTextFromPdf } from './pdf';
 import { extractTextFromImage } from './ocr';
 import { parseOrderText } from './parser';
@@ -62,8 +63,10 @@ export async function createOrderDraftFromImport(input: CreateOrderDraftInput): 
   }
 
   const parsed = parseOrderText(rawText, file.name.replace(/\.[^.]+$/, '') || 'Neuer Auftrag');
+  const hardenedItems = source.kind === 'image' ? hardenHallorenImageItems(parsed.items) : parsed.items;
   return {
     ...parsed,
+    items: hardenedItems.length > 0 ? hardenedItems : parsed.items,
     source,
     rawText,
     warnings: [...parsed.warnings, ...(extraction.warnings ?? [])]

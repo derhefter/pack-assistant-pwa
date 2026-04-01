@@ -29,9 +29,32 @@ import type { ImportMode, OrderRecord } from '../features/orders/types';
 
 type Screen = 'start' | 'order' | 'archive';
 
+function extractKnownSku(rawText: string, explicitSku: string | undefined, products: Awaited<ReturnType<typeof listProducts>>) {
+  const candidates = [
+    explicitSku,
+    ...Array.from(rawText.matchAll(/\b\d{5}\b/g), (match) => match[0])
+  ].filter(Boolean) as string[];
+
+  return candidates.find((candidate) =>
+    products.some((product) => normalizeSku(product.sku) === normalizeSku(candidate))
+  );
+}
+
+function extractTrailingQuantity(rawText: string, currentQuantity: number) {
+  if (currentQuantity > 1) {
+    return currentQuantity;
+  }
+
+  const match = rawText.trim().match(/(?:^|\s)(?<quantity>\d{1,2})$/);
+  const nextQuantity = match?.groups?.quantity ? Number(match.groups.quantity) : Number.NaN;
+  return Number.isFinite(nextQuantity) && nextQuantity > 0 ? nextQuantity : currentQuantity;
+}
+
 export function App() {
   const pdfInputRef = useRef<HTMLInputElement | null>(null);
   const photoInputRef = useRef<HTMLInputElement | null>(null);
+  const activeOrderRef = useRef<HTMLElement | null>(null);
+  const shouldScrollToOrderRef = useRef(false);
   const [screen, setScreen] = useState<Screen>('start');
   const [currentOrder, setCurrentOrder] = useState<OrderRecord | null>(null);
   const [archive, setArchive] = useState<OrderRecord[]>([]);
@@ -84,6 +107,20 @@ export function App() {
     })();
   }, []);
 
+  useEffect(() => {
+    if (!currentOrder || !shouldScrollToOrderRef.current) {
+      return;
+    }
+
+    shouldScrollToOrderRef.current = false;
+    window.setTimeout(() => {
+      activeOrderRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 120);
+  }, [currentOrder]);
+
   const progress = currentOrder
     ? {
         done: currentOrder.items.filter((item) => item.packed).length,
@@ -106,34 +143,39 @@ export function App() {
     }>
   ) {
     const [products, aliases] = await Promise.all([listProducts(), listProductAliases()]);
-    const { order } = await createOrderWithItems({
+    const { order, items } = await createOrderWithItems({
       title,
       source,
       sourceFileName,
       sourceMimeType,
       items: rawItems.map((item, index) => {
-        const matchedBySku = item.sku
-          ? products.find((product) => normalizeSku(product.sku) === normalizeSku(item.sku ?? ''))
+        const recoveredSku = extractKnownSku(item.rawText, item.sku, products);
+        const matchedBySku = recoveredSku
+          ? products.find((product) => normalizeSku(product.sku) === normalizeSku(recoveredSku))
           : undefined;
         const match = matchedBySku ? undefined : matchProductCandidate(item.name, products, aliases);
         const matchedProduct =
           matchedBySku ??
           (match ? products.find((product) => product.id === match.productId) : undefined);
+        const quantity = source === 'photo' ? extractTrailingQuantity(item.rawText, item.quantity) : item.quantity;
 
         return {
           rawText: item.rawText,
           productName: matchedProduct?.name ?? item.name,
-          quantity: item.quantity,
+          quantity,
           lineNumber: index + 1,
           productId: matchedProduct?.id,
-          sku: matchedProduct?.sku ?? item.sku,
+          sku: matchedProduct?.sku ?? recoveredSku ?? item.sku,
           unit: item.unit,
           confidence: item.confidence
         };
       })
     });
 
-    await refreshWorkspace(order.id);
+    const images = await listProductImages();
+    setCurrentOrder(mapOrderRecord(order, items, products, images));
+    setScreen('order');
+    void refreshWorkspace(order.id);
     setMessage(`Auftrag ${title} wurde geladen.`);
     setError(null);
   }
@@ -145,7 +187,10 @@ export function App() {
 
     try {
       setIsBusy(true);
-      setMessage(null);
+      setError(null);
+      setScreen('order');
+      setMessage(mode === 'photo' ? 'Foto wird gelesen...' : 'PDF wird gelesen...');
+      shouldScrollToOrderRef.current = true;
       const draft = await createOrderDraftFromImport({ file });
       await saveDraftAsOrder(
         draft.title,
@@ -209,6 +254,7 @@ export function App() {
   };
 
   const handleRestore = async (order: OrderRecord) => {
+    shouldScrollToOrderRef.current = true;
     await updateOrderStatus(order.id, 'active');
     await refreshWorkspace(order.id);
     setMessage(`Auftrag ${order.title} wieder geoeffnet.`);
@@ -261,9 +307,78 @@ export function App() {
     );
   });
 
+  const isOrderFocused = screen !== 'archive' && (Boolean(currentOrder) || isBusy);
+
+  const importCard = (
+    <SectionCard title="Import" subtitle="Start mit Foto oder PDF." accent>
+      <div className="cta-stack">
+        <BigButton disabled={!isReady || isBusy} onClick={() => pdfInputRef.current?.click()}>
+          PDF waehlen
+        </BigButton>
+        <BigButton
+          variant="secondary"
+          disabled={!isReady || isBusy}
+          onClick={() => photoInputRef.current?.click()}
+        >
+          Foto waehlen
+        </BigButton>
+        <label className="manual-import">
+          <span>Text einfuegen als robuster Fallback</span>
+          <textarea
+            rows={5}
+            value={manualText}
+            placeholder={"48286 Halloren Chocolate Thins Pistazie 1\n12229 Apfel Zimt-Halloren O's 2"}
+            onChange={(event) => setManualText(event.target.value)}
+          />
+        </label>
+        <BigButton
+          variant="ghost"
+          disabled={!isReady || isBusy}
+          onClick={() => void handleManualImport()}
+        >
+          Text importieren
+        </BigButton>
+      </div>
+    </SectionCard>
+  );
+
+  const activeOrderCard = (
+    <SectionCard ref={activeOrderRef} title="Aktiver Auftrag" subtitle="Gross, klar, mit Audio.">
+      {screen === 'archive' ? (
+        <ArchiveView
+          archive={filteredArchive}
+          searchTerm={archiveSearch}
+          onSearchTermChange={setArchiveSearch}
+          onRestore={handleRestore}
+        />
+      ) : isBusy && !currentOrder ? (
+        <EmptyState
+          title="Import laeuft"
+          description="Das Foto wird jetzt gelesen. Danach springt die Ansicht direkt zum Auftrag."
+          actionLabel="Bitte kurz warten"
+          onAction={() => undefined}
+        />
+      ) : currentOrder ? (
+        <OrderView
+          order={currentOrder}
+          onToggleItem={handleToggleItem}
+          onArchive={handleArchiveCurrent}
+          onCaptureImage={handleCaptureImage}
+        />
+      ) : (
+        <EmptyState
+          title="Noch kein Auftrag aktiv"
+          description="Importiere eine Packliste. Danach erscheinen grosse Karten mit Bild, Menge und Audio."
+          actionLabel="Import starten"
+          onAction={() => pdfInputRef.current?.click()}
+        />
+      )}
+    </SectionCard>
+  );
+
   return (
     <main className="app-shell">
-      <section className="hero">
+      <section className={`hero ${isOrderFocused ? 'hero--compact' : ''}`.trim()}>
         <div>
           <div className="hero-brand">
             <img src="/brand/logo-halloren.png" alt="Halloren Logo" className="hero-brand__logo" />
@@ -326,65 +441,13 @@ export function App() {
         </div>
       </div>
 
-      <section className="dashboard">
-        <SectionCard title="Import" subtitle="Start mit Foto oder PDF." accent>
-          <div className="cta-stack">
-            <BigButton disabled={!isReady || isBusy} onClick={() => pdfInputRef.current?.click()}>
-              PDF waehlen
-            </BigButton>
-            <BigButton
-              variant="secondary"
-              disabled={!isReady || isBusy}
-              onClick={() => photoInputRef.current?.click()}
-            >
-              Foto waehlen
-            </BigButton>
-            <label className="manual-import">
-              <span>Text einfuegen als robuster Fallback</span>
-              <textarea
-                rows={5}
-                value={manualText}
-                placeholder={"48286 Halloren Chocolate Thins Pistazie 1\n12229 Apfel Zimt-Halloren O's 2"}
-                onChange={(event) => setManualText(event.target.value)}
-              />
-            </label>
-            <BigButton
-              variant="ghost"
-              disabled={!isReady || isBusy}
-              onClick={() => void handleManualImport()}
-            >
-              Text importieren
-            </BigButton>
-          </div>
-        </SectionCard>
-
-        <SectionCard title="Aktiver Auftrag" subtitle="Gross, klar, mit Audio.">
-          {screen === 'archive' ? (
-            <ArchiveView
-              archive={filteredArchive}
-              searchTerm={archiveSearch}
-              onSearchTermChange={setArchiveSearch}
-              onRestore={handleRestore}
-            />
-          ) : currentOrder ? (
-            <OrderView
-              order={currentOrder}
-              onToggleItem={handleToggleItem}
-              onArchive={handleArchiveCurrent}
-              onCaptureImage={handleCaptureImage}
-            />
-          ) : (
-            <EmptyState
-              title="Noch kein Auftrag aktiv"
-              description="Importiere eine Packliste. Danach erscheinen grosse Karten mit Bild, Menge und Audio."
-              actionLabel="Import starten"
-              onAction={() => pdfInputRef.current?.click()}
-            />
-          )}
-        </SectionCard>
+      <section className={`dashboard ${isOrderFocused ? 'dashboard--focus' : ''}`.trim()}>
+        {isOrderFocused ? activeOrderCard : importCard}
+        {isOrderFocused ? importCard : activeOrderCard}
       </section>
 
-      <section className="secondary-grid">
+      {!isOrderFocused ? (
+        <section className="secondary-grid">
         <SectionCard title="Startscreen" subtitle="Wenig Text, direkte Aktionen.">
           <ul className="bullet-list">
             <li>1 Tap fuer Import</li>
@@ -401,7 +464,8 @@ export function App() {
             tone="warning"
           />
         </SectionCard>
-      </section>
+        </section>
+      ) : null}
     </main>
   );
 }

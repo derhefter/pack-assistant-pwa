@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from 'react';
+import { forwardRef, type PropsWithChildren } from 'react';
 
 type Props = PropsWithChildren<{
   title: string;
@@ -6,9 +6,12 @@ type Props = PropsWithChildren<{
   accent?: boolean;
 }>;
 
-export function SectionCard({ title, subtitle, accent = false, children }: Props) {
+export const SectionCard = forwardRef<HTMLElement, Props>(function SectionCard(
+  { title, subtitle, accent = false, children },
+  ref
+) {
   return (
-    <section className={`section-card ${accent ? 'section-card--accent' : ''}`.trim()}>
+    <section ref={ref} className={`section-card ${accent ? 'section-card--accent' : ''}`.trim()}>
       <div className="section-card__head">
         <div>
           <span className="eyebrow">{title}</span>
@@ -18,4 +21,4 @@ export function SectionCard({ title, subtitle, accent = false, children }: Props
       {children}
     </section>
   );
-}
+});

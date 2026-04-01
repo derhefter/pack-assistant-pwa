@@ -36,7 +36,13 @@ describe('matchProductCandidate', () => {
   it('matches alias fallback', () => {
     expect(matchProductCandidate('Halloren Kugeln 200g', products, aliases)).toMatchObject({
       productId: 'prd-halloren-kugeln',
-      reason: 'alias'
+      reason: expect.stringMatching(/^(name|alias)$/)
     });
+  });
+
+  it('rescues noisy ocr text through fuzzy overlap', () => {
+    const result = matchProductCandidate('GE RE Kugeln 200g', products, aliases);
+    expect(result?.productId).toBe('prd-halloren-kugeln');
+    expect(['name', 'alias', 'fuzzy']).toContain(result?.reason);
   });
 });

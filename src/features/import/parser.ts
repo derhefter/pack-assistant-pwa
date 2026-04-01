@@ -3,7 +3,7 @@ import { normalizeText, stableId } from '../../lib/text-normalization';
 
 const BULLET_PREFIX = /^[-*\u2022]\s*/;
 const PRODUCT_CUE_PATTERN =
-  /\b(halloren|chocolate|schoko|kugeln|riegel|pralinen|tafelschokolade|mints|o'?s|frukis|mint|brownie|vanille|erdbeer|karamell|pistazie|himbeere|apfel|royal)\b/i;
+  /\b(halloren|chocolate|schoko|kugeln|riegel|pralinen|tafelschokolade|mints|o'?s|frukis|mint|brownie|vanille|vanillekipferl|erdbeer|erdbeere|karamell|pistazie|himbeere|apfel|royal|mix)\b/i;
 const ADMIN_NOISE_PATTERN =
   /\b(paypal|zahlungsart|versandart|standardversand|deutschland|eigentu[mn]|leistungsdatum|rechnungsdatum|geschaeftsfuehrer|bankverbindung|ust-id|seite|waren bleiben)\b/i;
 const DETAIL_NOISE_PATTERN = /\b(kilogramm|kg|gramm|g\/|eur|1 kilogramm)\b/i;
@@ -31,13 +31,13 @@ const QUANTITY_PATTERNS = [
 
 function repairCommonImportText(value: string) {
   return value
-    .replace(/â€™|’/g, "'")
-    .replace(/Ã¼|ü/g, 'ue')
-    .replace(/Ã¤|ä/g, 'ae')
-    .replace(/Ã¶|ö/g, 'oe')
-    .replace(/ÃŸ|ß/g, 'ss')
-    .replace(/â‚¬|€/g, 'eur')
-    .replace(/[–—]/g, '-');
+    .replace(/Ã¢â‚¬â„¢|â€™/g, "'")
+    .replace(/ÃƒÂ¼|Ã¼/g, 'ue')
+    .replace(/ÃƒÂ¤|Ã¤/g, 'ae')
+    .replace(/ÃƒÂ¶|Ã¶/g, 'oe')
+    .replace(/ÃƒÅ¸|ÃŸ/g, 'ss')
+    .replace(/Ã¢â€šÂ¬|â‚¬|€/g, 'eur')
+    .replace(/[â€“â€”–—]/g, '-');
 }
 
 function cleanLine(line: string): string {
@@ -91,7 +91,25 @@ function parseQuantity(line: string): {
 }
 
 function isMergeableHallorenRow(line: string) {
-  return TABLE_ROW_PREFIX_PATTERN.test(line) && !TABLE_ROW_COMPLETE_PATTERN.test(line);
+  const normalized = normalizeText(line);
+
+  if (TABLE_ROW_PREFIX_PATTERN.test(line) && !TABLE_ROW_COMPLETE_PATTERN.test(line)) {
+    return true;
+  }
+
+  if (!PRODUCT_CUE_PATTERN.test(normalized)) {
+    return false;
+  }
+
+  if (ADMIN_NOISE_PATTERN.test(normalized) || STANDALONE_UNIT_PATTERN.test(line)) {
+    return false;
+  }
+
+  if (TABLE_ROW_COMPLETE_PATTERN.test(line) || /\d{1,3}\s*(x|mal)\b/i.test(normalized)) {
+    return false;
+  }
+
+  return true;
 }
 
 function collapseImportLines(lines: string[]) {

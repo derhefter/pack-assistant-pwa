@@ -370,6 +370,13 @@ export function matchProductCandidate(input: string, products: Product[], aliase
   const trimmed = input.trim();
   const normalized = normalizeText(trimmed);
   const normalizedSku = normalizeSku(trimmed);
+  const aliasMap = new Map<string, string[]>();
+
+  for (const alias of aliases) {
+    const list = aliasMap.get(alias.productId) ?? [];
+    list.push(alias.normalizedAlias);
+    aliasMap.set(alias.productId, list);
+  }
 
   const exactSku = products.find((product) => normalizeSku(product.sku) === normalizedSku);
   if (exactSku) {
@@ -394,11 +401,15 @@ export function matchProductCandidate(input: string, products: Product[], aliase
   const fuzzy = products
     .map((product) => ({
       productId: product.id,
-      score: fuzzyScore(normalizeText(product.name), normalized)
+      score: Math.max(
+        fuzzyScore(normalizeText(product.name), normalized),
+        ...product.aliases.map((alias) => fuzzyScore(normalizeText(alias), normalized)),
+        ...(aliasMap.get(product.id) ?? []).map((alias) => fuzzyScore(alias, normalized))
+      )
     }))
     .sort((a, b) => b.score - a.score)[0];
 
-  if (fuzzy && fuzzy.score >= 0.6) {
+  if (fuzzy && fuzzy.score >= 0.45) {
     return { productId: fuzzy.productId, score: fuzzy.score, reason: 'fuzzy' } as const;
   }
 
@@ -429,7 +440,9 @@ function fuzzyScore(a: string, b: string) {
   const bWords = new Set(b.split(' '));
   const intersection = [...aWords].filter((word) => bWords.has(word)).length;
   const union = new Set([...aWords, ...bWords]).size;
-  return union === 0 ? 0 : intersection / union;
+  const jaccard = union === 0 ? 0 : intersection / union;
+  const overlap = Math.min(aWords.size, bWords.size) === 0 ? 0 : intersection / Math.min(aWords.size, bWords.size);
+  return Math.max(jaccard, overlap);
 }
 
 async function resolveSeedImageProductId(seedImage: ProductImageSeed) {

@@ -3,7 +3,7 @@ import { seedBundle } from '../../src/db/seed';
 
 describe('seed bundle', () => {
   it('normalizes legacy product seeds', () => {
-    expect(seedBundle.products.length).toBeGreaterThanOrEqual(10);
+    expect(seedBundle.products.length).toBeGreaterThanOrEqual(11);
     expect(seedBundle.products[0]).toMatchObject({
       id: 'prd-48286',
       sku: '48286',

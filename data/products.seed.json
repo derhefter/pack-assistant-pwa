@@ -120,6 +120,21 @@
     "updatedAt": "2026-04-01T00:00:00.000Z"
   },
   {
+    "id": "prd-12243",
+    "sku": "12243",
+    "normalizedSku": "12243",
+    "name": "Vanillekipferl Halloren O's",
+    "normalizedName": "vanillekipferl halloren o s",
+    "aliases": [
+      { "id": "alias-12243-1", "productId": "prd-12243", "value": "Vanillekipferl Halloren O's", "normalizedValue": "vanillekipferl halloren o s", "source": "seed", "createdAt": "2026-04-01T00:00:00.000Z" }
+    ],
+    "category": "Chocolate",
+    "brand": "Halloren",
+    "packSize": "Beutel",
+    "createdAt": "2026-04-01T00:00:00.000Z",
+    "updatedAt": "2026-04-01T00:00:00.000Z"
+  },
+  {
     "id": "prd-62473",
     "sku": "62473",
     "normalizedSku": "62473",

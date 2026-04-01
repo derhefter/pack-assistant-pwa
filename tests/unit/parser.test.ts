@@ -37,4 +37,21 @@ Gewaehlte Zahlungsart: PayPal`);
       unit: 'Beutel'
     });
   });
+
+  it('rescues noisy OCR rows when sku and key flavor words exist', () => {
+    const result = parseOrderText(`1 48286 GE RE Thins Pistazie - 150g
+Beutel
+1
+? SE CCORAgERe ERS A
+Gewaehlte Zahlungsart: PayPal`);
+
+    expect(result.items).toHaveLength(1);
+    expect(result.items[0]).toMatchObject({
+      sku: '48286',
+      quantity: 1,
+      unit: 'Beutel'
+    });
+    expect(result.items[0].name).toContain('Thins');
+    expect(result.items[0].name).toContain('Pistazie');
+  });
 });
