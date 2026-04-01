@@ -6,7 +6,7 @@ describe('createOrderDraftFromImport', () => {
     const file = new File(['ignored'], 'auftrag.pdf', { type: 'application/pdf' });
     const draft = await createOrderDraftFromImport({
       file,
-      text: '2 x Milch\nButter'
+      text: "1 48286 Halloren Chocolate Thins Pistazie - 150g Beutel 1\n5 40635 Royal Mints 1"
     });
 
     expect(draft.items).toHaveLength(2);
@@ -16,12 +16,12 @@ describe('createOrderDraftFromImport', () => {
   it('falls back from pdf to ocr when the type is unknown', async () => {
     const file = new File(['ignored'], 'scan.bin', { type: '' });
     const pdfExtractor = vi.fn().mockRejectedValue(new Error('pdf failed'));
-    const ocrExtractor = vi.fn().mockResolvedValue({ text: '1 x Wasser' });
+    const ocrExtractor = vi.fn().mockResolvedValue({ text: '1 x Halloren Kugeln' });
 
     const draft = await createOrderDraftFromImport({ file, pdfExtractor, ocrExtractor });
     expect(pdfExtractor).toHaveBeenCalledOnce();
     expect(ocrExtractor).toHaveBeenCalledOnce();
-    expect(draft.items[0]).toMatchObject({ name: 'Wasser', quantity: 1 });
+    expect(draft.items[0]).toMatchObject({ name: 'Halloren Kugeln', quantity: 1 });
   });
 
   it('hardens Halloren OCR image items against garbled lines', async () => {

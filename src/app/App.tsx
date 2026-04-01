@@ -385,8 +385,7 @@ export function App() {
             <span className="hero-brand__tag">Halloren</span>
           </div>
           <span className="eyebrow">Pack-Assistent</span>
-          <h1>Gross, visuell, offline-first.</h1>
-          <p>Weniger lesen. Mehr sehen. Ein Tap pro Artikel. Audio sagt, was zu tun ist.</p>
+          <h1>Halloren Pack-Assistent</h1>
         </div>
 
         <div className="hero-actions">
@@ -404,6 +403,8 @@ export function App() {
             Archiv
           </BigButton>
         </div>
+
+        <p className="hero-copy">Foto oder PDF laden. Danach direkt packen und vorlesen lassen.</p>
       </section>
 
       <input

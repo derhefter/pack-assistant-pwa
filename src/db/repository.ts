@@ -357,6 +357,44 @@ export async function seedDatabaseIfNeeded(seedProducts: ProductSeed[], seedImag
   return true;
 }
 
+export async function syncSeedCatalog(seedProducts: ProductSeed[], seedImages: ProductImageSeed[]) {
+  await upsertProductsFromSeed(seedProducts);
+
+  for (const seedImage of seedImages) {
+    const productId = await resolveSeedImageProductId(seedImage);
+    if (!productId) {
+      continue;
+    }
+
+    const image = createProductImageFromSeed({
+      ...seedImage,
+      productId
+    });
+
+    const existing = image.hash
+      ? (await db.productImages.where('productId').equals(productId).toArray()).find(
+          (entry) => entry.hash === image.hash || entry.url === image.url
+        )
+      : (await db.productImages.where('productId').equals(productId).toArray()).find(
+          (entry) => entry.url === image.url
+        );
+
+    if (existing) {
+      await upsertProductImage({
+        ...existing,
+        ...image,
+        id: existing.id,
+        productId,
+        createdAt: existing.createdAt,
+        updatedAt: nowIso()
+      });
+      continue;
+    }
+
+    await upsertProductImage(image);
+  }
+}
+
 export async function clearDatabase() {
   await db.products.clear();
   await db.productAliases.clear();

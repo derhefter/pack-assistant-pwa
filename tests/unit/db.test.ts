@@ -7,7 +7,8 @@ import {
   listOrderItems,
   listOrders,
   listProducts,
-  seedDatabaseIfNeeded
+  seedDatabaseIfNeeded,
+  syncSeedCatalog
 } from '../../src/db';
 import { seedBundle } from '../../src/db/seed';
 
@@ -75,5 +76,25 @@ describe('pack assistant db', () => {
     const items = await listOrderItems(order.id);
     expect(orders).toHaveLength(1);
     expect(items).toHaveLength(1);
+  });
+
+  it('syncs current Halloren seeds into an existing database', async () => {
+    await createOrderWithItems({
+      title: 'Altbestand',
+      source: 'manual',
+      items: [
+        {
+          rawText: '1 Halloren Kugeln',
+          productName: 'Halloren Kugeln',
+          quantity: 1
+        }
+      ]
+    });
+
+    await syncSeedCatalog(seedBundle.products, seedBundle.productImages);
+
+    const products = await listProducts();
+    expect(products.some((product) => product.sku === '48286')).toBe(true);
+    expect(products.some((product) => product.sku === '46862')).toBe(true);
   });
 });

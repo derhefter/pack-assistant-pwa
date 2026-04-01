@@ -12,6 +12,7 @@ import {
   listProductImages,
   listProducts,
   seedDatabaseIfNeeded,
+  syncSeedCatalog,
   toggleOrderItemChecked
 } from './repository';
 
@@ -20,7 +21,10 @@ export async function initializeLocalFirstStore() {
     await db.open();
   }
   if (hasSeedData()) {
-    await seedDatabaseIfNeeded(seedBundle.products, seedBundle.productImages);
+    const seeded = await seedDatabaseIfNeeded(seedBundle.products, seedBundle.productImages);
+    if (!seeded) {
+      await syncSeedCatalog(seedBundle.products, seedBundle.productImages);
+    }
   }
   return db;
 }
