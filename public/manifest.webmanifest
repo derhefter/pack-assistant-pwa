@@ -1,0 +1,9 @@
+{
+  "name": "Pack-Assistent",
+  "short_name": "Pack",
+  "description": "Offlinefaehiger Pack-Assistent fuer visuelles und auditives Packen.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6efe3",
+  "theme_color": "#0f5b4f"
+}

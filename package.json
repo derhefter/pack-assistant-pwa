@@ -1,0 +1,49 @@
+{
+  "name": "pack-assistant-pwa",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "test": "vitest run --config vitest.config.mjs --configLoader native --pool threads",
+    "test:watch": "vitest --config vitest.config.mjs --configLoader native --pool threads",
+    "test:e2e": "playwright test",
+    "import:local-images": "tsx scripts/import-local-images.ts",
+    "format": "prettier --write .",
+    "check": "npm.cmd run lint && npm.cmd run test"
+  },
+  "dependencies": {
+    "dexie": "^4.2.1",
+    "pdfjs-dist": "^5.4.296",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tesseract.js": "^6.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.56.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.1.0",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "fake-indexeddb": "^6.2.4",
+    "jsdom": "^27.0.1",
+    "prettier": "^3.6.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "vite": "^7.2.2",
+    "vite-plugin-pwa": "^1.1.0",
+    "vitest": "^4.0.0"
+  }
+}

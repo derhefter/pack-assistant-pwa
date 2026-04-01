@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="960" viewBox="0 0 960 960">
+  <rect width="960" height="960" rx="80" fill="#f3ebdb" />
+  <circle cx="320" cy="330" r="120" fill="#bb8651" />
+  <circle cx="500" cy="430" r="120" fill="#8a5a36" />
+  <circle cx="650" cy="325" r="120" fill="#b47a46" />
+  <circle cx="420" cy="580" r="120" fill="#7b4b2e" />
+  <circle cx="590" cy="600" r="120" fill="#9e6840" />
+  <text x="480" y="820" text-anchor="middle" font-family="Trebuchet MS, sans-serif" font-size="56" font-weight="700" fill="#214b42">Schoko Brezeln</text>
+</svg>

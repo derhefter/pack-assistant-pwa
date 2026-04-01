@@ -1,0 +1,67 @@
+[
+  {
+    "id": "img-hk-manual-1",
+    "productId": "prd-halloren-kugeln",
+    "sku": "HK-200",
+    "normalizedSku": "HK200",
+    "sourceKind": "manual",
+    "uri": "/seed/halloren-kugeln-manual.svg",
+    "thumbUri": "/seed/halloren-kugeln-manual.svg",
+    "alt": "Halloren Kugeln, manuell aufgenommen",
+    "width": 1200,
+    "height": 1200,
+    "captureSource": "camera",
+    "confidence": 1,
+    "camera": {
+      "capturedAt": "2026-03-29T00:00:00.000Z",
+      "deviceLabel": "Frontkamera",
+      "orientation": "square",
+      "notes": "Handfoto aus dem Regal."
+    },
+    "createdAt": "2026-03-29T00:00:00.000Z",
+    "updatedAt": "2026-03-29T00:00:00.000Z"
+  },
+  {
+    "id": "img-hk-local-1",
+    "productId": "prd-halloren-kugeln",
+    "sku": "HK200",
+    "normalizedSku": "HK200",
+    "sourceKind": "local",
+    "uri": "/seed/halloren-kugeln-local.svg",
+    "alt": "Halloren Kugeln, lokale Seed-Datei",
+    "width": 960,
+    "height": 960,
+    "captureSource": "seed",
+    "confidence": 0.8,
+    "createdAt": "2026-03-29T00:00:00.000Z",
+    "updatedAt": "2026-03-29T00:00:00.000Z"
+  },
+  {
+    "id": "img-sb-research-1",
+    "productId": "prd-schoko-brezeln",
+    "sku": "SB-150",
+    "normalizedSku": "SB150",
+    "sourceKind": "research",
+    "uri": "/seed/schoko-brezeln-research.svg",
+    "alt": "Schoko Brezeln, recherchiertes Referenzbild",
+    "width": 1024,
+    "height": 768,
+    "captureSource": "seed",
+    "confidence": 0.65,
+    "createdAt": "2026-03-29T00:00:00.000Z",
+    "updatedAt": "2026-03-29T00:00:00.000Z"
+  },
+  {
+    "id": "img-vz-placeholder",
+    "productId": "prd-vanille-zwieback",
+    "sku": "VZ-100",
+    "normalizedSku": "VZ100",
+    "sourceKind": "placeholder",
+    "uri": "placeholder",
+    "alt": "Vanille Zwieback Platzhalter",
+    "confidence": 0,
+    "captureSource": "seed",
+    "createdAt": "2026-03-29T00:00:00.000Z",
+    "updatedAt": "2026-03-29T00:00:00.000Z"
+  }
+]

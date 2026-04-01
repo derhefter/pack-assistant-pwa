@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="960" viewBox="0 0 960 960">
+  <rect width="960" height="960" rx="80" fill="#efe6d3" />
+  <rect x="170" y="180" width="620" height="600" rx="40" fill="#31564f" />
+  <rect x="220" y="250" width="520" height="420" rx="28" fill="#4e7a70" />
+  <circle cx="330" cy="470" r="88" fill="#f5dfb6" />
+  <circle cx="480" cy="450" r="108" fill="#f1ca86" />
+  <circle cx="625" cy="495" r="92" fill="#f8e8cb" />
+  <text x="480" y="825" text-anchor="middle" font-family="Trebuchet MS, sans-serif" font-size="54" font-weight="700" fill="#214b42">Lokales Seed-Bild</text>
+</svg>

@@ -1,0 +1,76 @@
+[
+  {
+    "id": "prd-halloren-kugeln",
+    "sku": "HK-200",
+    "normalizedSku": "HK200",
+    "name": "Halloren Kugeln",
+    "normalizedName": "halloren kugeln",
+    "aliases": [
+      {
+        "id": "alias-hk-1",
+        "productId": "prd-halloren-kugeln",
+        "value": "Halloren Kugeln 200g",
+        "normalizedValue": "halloren kugeln 200g",
+        "source": "seed",
+        "createdAt": "2026-03-29T00:00:00.000Z"
+      },
+      {
+        "id": "alias-hk-2",
+        "productId": "prd-halloren-kugeln",
+        "value": "Halloren Kugeln Schoko",
+        "normalizedValue": "halloren kugeln schoko",
+        "source": "seed",
+        "createdAt": "2026-03-29T00:00:00.000Z"
+      }
+    ],
+    "category": "Sweets",
+    "brand": "Halloren",
+    "packSize": "200 g",
+    "createdAt": "2026-03-29T00:00:00.000Z",
+    "updatedAt": "2026-03-29T00:00:00.000Z"
+  },
+  {
+    "id": "prd-schoko-brezeln",
+    "sku": "SB-150",
+    "normalizedSku": "SB150",
+    "name": "Schoko Brezeln",
+    "normalizedName": "schoko brezeln",
+    "aliases": [
+      {
+        "id": "alias-sb-1",
+        "productId": "prd-schoko-brezeln",
+        "value": "Schoko Brezeln 150g",
+        "normalizedValue": "schoko brezeln 150g",
+        "source": "seed",
+        "createdAt": "2026-03-29T00:00:00.000Z"
+      }
+    ],
+    "category": "Sweets",
+    "brand": "Hausmarke",
+    "packSize": "150 g",
+    "createdAt": "2026-03-29T00:00:00.000Z",
+    "updatedAt": "2026-03-29T00:00:00.000Z"
+  },
+  {
+    "id": "prd-vanille-zwieback",
+    "sku": "VZ-100",
+    "normalizedSku": "VZ100",
+    "name": "Vanille Zwieback",
+    "normalizedName": "vanille zwieback",
+    "aliases": [
+      {
+        "id": "alias-vz-1",
+        "productId": "prd-vanille-zwieback",
+        "value": "Zwieback Vanille",
+        "normalizedValue": "zwieback vanille",
+        "source": "seed",
+        "createdAt": "2026-03-29T00:00:00.000Z"
+      }
+    ],
+    "category": "Baking",
+    "brand": "Klassik",
+    "packSize": "100 g",
+    "createdAt": "2026-03-29T00:00:00.000Z",
+    "updatedAt": "2026-03-29T00:00:00.000Z"
+  }
+]

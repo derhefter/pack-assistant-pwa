@@ -1,0 +1,14 @@
+node_modules
+dist
+coverage
+playwright-report
+test-results
+*.tsbuildinfo
+*.js
+*.d.ts
+!eslint.config.js
+!src/vite-env.d.ts
+!src/types/*.d.ts
+
+.vercel
+.env*.local

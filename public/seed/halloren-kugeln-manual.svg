@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="960" viewBox="0 0 960 960">
+  <rect width="960" height="960" rx="80" fill="#f7ead4" />
+  <rect x="180" y="190" width="600" height="580" rx="42" fill="#5e3426" />
+  <rect x="220" y="230" width="520" height="500" rx="32" fill="#7a4630" />
+  <circle cx="350" cy="445" r="92" fill="#f1d7ab" />
+  <circle cx="480" cy="500" r="112" fill="#e9c687" />
+  <circle cx="610" cy="430" r="96" fill="#f5e0bc" />
+  <text x="480" y="820" text-anchor="middle" font-family="Trebuchet MS, sans-serif" font-size="58" font-weight="700" fill="#214b42">Halloren Kugeln</text>
+</svg>
