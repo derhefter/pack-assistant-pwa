@@ -51,6 +51,7 @@ function extractTrailingQuantity(rawText: string, currentQuantity: number) {
 export function App() {
   const pdfInputRef = useRef<HTMLInputElement | null>(null);
   const photoInputRef = useRef<HTMLInputElement | null>(null);
+  const photoLibraryInputRef = useRef<HTMLInputElement | null>(null);
   const activeOrderRef = useRef<HTMLElement | null>(null);
   const shouldScrollToOrderRef = useRef(false);
   const [currentOrder, setCurrentOrder] = useState<OrderRecord | null>(null);
@@ -265,6 +266,13 @@ export function App() {
             Foto aufnehmen
           </BigButton>
           <BigButton
+            variant="ghost"
+            disabled={!isReady || isBusy}
+            onClick={() => photoLibraryInputRef.current?.click()}
+          >
+            Foto aus Dateien
+          </BigButton>
+          <BigButton
             variant="secondary"
             disabled={!isReady || isBusy}
             onClick={() => pdfInputRef.current?.click()}
@@ -282,6 +290,13 @@ export function App() {
         type="file"
         accept="image/*"
         capture="environment"
+        onChange={handleImportFromInput}
+      />
+      <input
+        ref={photoLibraryInputRef}
+        className="sr-only"
+        type="file"
+        accept="image/jpeg,image/jpg,image/png,image/webp,image/*"
         onChange={handleImportFromInput}
       />
       <input
