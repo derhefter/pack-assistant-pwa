@@ -255,9 +255,7 @@ export function App() {
         <div>
           <div className="hero-brand">
             <img src="/brand/logo-halloren.png" alt="Halloren Logo" className="hero-brand__logo" />
-            <span className="hero-brand__tag">Halloren</span>
           </div>
-          <span className="eyebrow">Pack-Assistent</span>
           <h1>Halloren Pack-Assistent</h1>
         </div>
 

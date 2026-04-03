@@ -36,18 +36,6 @@ function formatQuantity(quantity: number): string {
   return GERMAN_NUMBERS[safeQuantity] ?? String(safeQuantity);
 }
 
-function resolvePackedState(orderItem: OrderItemSpeechTarget): boolean {
-  if (typeof orderItem.packed === 'boolean') {
-    return orderItem.packed;
-  }
-
-  if (typeof orderItem.isPacked === 'boolean') {
-    return orderItem.isPacked;
-  }
-
-  return orderItem.status === 'packed';
-}
-
 export interface SpeakTextOptions {
   lang?: string;
   onStart?: () => void;
@@ -73,10 +61,8 @@ function selectBestGermanVoice(speechSynthesis: SpeechSynthesis) {
 export function formatSpeechText(orderItem: OrderItemSpeechTarget): string {
   const quantityText = formatQuantity(orderItem.quantity);
   const productName = normalizeProductName(orderItem.productName);
-  const packed = resolvePackedState(orderItem);
-  const stateText = packed ? 'Bereits gepackt.' : 'Noch offen.';
 
-  return `${quantityText} mal ${productName}. ${stateText}`;
+  return `${quantityText} mal ${productName}.`;
 }
 
 function getSpeechEnvironment() {

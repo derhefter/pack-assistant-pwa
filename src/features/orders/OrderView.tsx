@@ -36,68 +36,68 @@ export function OrderView({ order, onToggleItem, onArchive, onCaptureImage }: Pr
 
           return (
             <article key={item.id} className={`product-card ${item.packed ? 'product-card--done' : ''}`.trim()}>
-            <button
-              type="button"
-              className="product-card__toggle"
-              aria-pressed={item.packed}
-              onClick={() => onToggleItem(item.orderItemId)}
-            >
-              <div className="product-card__image">
-                <span className="product-card__badge">
-                  {item.quantity}
-                  {item.unit ? ` ${item.unit}` : ' x'}
-                </span>
-                <img src={item.imageUrl} alt={item.imageAlt} />
-              </div>
-              <div className="product-card__body">
-                {item.sku ? <span className="product-card__sku">Art.-Nr. {item.sku}</span> : null}
-                <strong>{item.name}</strong>
-                <span className="product-card__qty">
-                  {item.packed ? 'Bereits gepackt' : 'Noch offen'}
-                </span>
-              </div>
-            </button>
+              <button
+                type="button"
+                className="product-card__toggle"
+                aria-pressed={item.packed}
+                onClick={() => onToggleItem(item.orderItemId)}
+              >
+                <div className="product-card__image">
+                  <span className="product-card__badge">
+                    {item.quantity}
+                    {item.unit ? ` ${item.unit}` : ' x'}
+                  </span>
+                  <img src={item.imageUrl} alt={item.imageAlt} />
+                </div>
+                <div className="product-card__body">
+                  {item.sku ? <span className="product-card__sku">Art.-Nr. {item.sku}</span> : null}
+                  <strong>{item.name}</strong>
+                  <span className={`product-card__qty ${item.packed ? 'product-card__qty--done' : ''}`.trim()}>
+                    {item.packed ? 'Bereits gepackt' : 'Noch offen'}
+                  </span>
+                </div>
+              </button>
 
               <div
                 className={`product-card__actions ${
                   hasCaptureAction ? 'product-card__actions--double' : 'product-card__actions--single'
                 }`.trim()}
               >
-              <BigButton
-                variant="ghost"
-                disabled={!speech.supported}
-                onClick={() => speech.speak(item.speechText)}
-              >
-                Vorlesen
-              </BigButton>
+                <BigButton
+                  variant="ghost"
+                  disabled={!speech.supported}
+                  onClick={() => speech.speak(item.speechText)}
+                >
+                  Vorlesen
+                </BigButton>
 
                 {hasCaptureAction ? (
-                <>
-                  <input
-                    ref={(node) => {
-                      inputMap.current[item.orderItemId] = node;
-                    }}
-                    className="sr-only"
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    onChange={(event) => {
-                      const file = event.target.files?.[0];
-                      if (file) {
-                        onCaptureImage(item.orderItemId, file);
-                      }
-                      event.target.value = '';
-                    }}
-                  />
-                  <BigButton
-                    variant="secondary"
-                    onClick={() => inputMap.current[item.orderItemId]?.click()}
-                  >
-                    Bild aufnehmen
-                  </BigButton>
-                </>
-              ) : null}
-            </div>
+                  <>
+                    <input
+                      ref={(node) => {
+                        inputMap.current[item.orderItemId] = node;
+                      }}
+                      className="sr-only"
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (file) {
+                          onCaptureImage(item.orderItemId, file);
+                        }
+                        event.target.value = '';
+                      }}
+                    />
+                    <BigButton
+                      variant="secondary"
+                      onClick={() => inputMap.current[item.orderItemId]?.click()}
+                    >
+                      Bild aufnehmen
+                    </BigButton>
+                  </>
+                ) : null}
+              </div>
             </article>
           );
         })}

@@ -14,7 +14,7 @@ describe('formatSpeechText', () => {
         productName: 'Halloren Kugeln',
         quantity: 3
       })
-    ).toBe('Drei mal Halloren Kugeln. Noch offen.');
+    ).toBe('Drei mal Halloren Kugeln.');
   });
 
   it('formats packed items in simple German', () => {
@@ -24,7 +24,7 @@ describe('formatSpeechText', () => {
         quantity: 2,
         packed: true
       })
-    ).toBe('Zwei mal Schoko Brezeln. Bereits gepackt.');
+    ).toBe('Zwei mal Schoko Brezeln.');
   });
 });
 

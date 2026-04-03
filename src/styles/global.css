@@ -155,6 +155,9 @@ textarea {
   display: grid;
   gap: 14px;
   margin: 16px 0;
+  position: sticky;
+  top: 8px;
+  z-index: 30;
 }
 
 .dashboard,
@@ -235,6 +238,7 @@ textarea {
   display: grid;
   gap: 12px;
   padding: 16px 18px;
+  background: rgba(255, 253, 249, 0.94);
 }
 
 .progress-header strong {
@@ -396,8 +400,11 @@ textarea {
 }
 
 .product-card--done {
-  border-color: rgba(23, 166, 124, 0.42);
-  background: linear-gradient(180deg, rgba(23, 166, 124, 0.09), #fff);
+  border-color: rgba(12, 126, 83, 0.86);
+  background: linear-gradient(180deg, rgba(24, 169, 111, 0.22), rgba(245, 255, 250, 0.98));
+  box-shadow:
+    0 0 0 2px rgba(12, 126, 83, 0.18),
+    0 12px 24px rgba(28, 63, 52, 0.1);
 }
 
 .product-card__image {
@@ -473,6 +480,11 @@ textarea {
 .product-card__qty {
   color: var(--muted);
   font-size: 0.95rem;
+}
+
+.product-card__qty--done {
+  color: #0b6f4a;
+  font-weight: 800;
 }
 
 .product-card__actions {
@@ -590,6 +602,7 @@ textarea {
   .topline {
     gap: 10px;
     margin: 12px 0;
+    top: 6px;
   }
 
   .hero-actions,
