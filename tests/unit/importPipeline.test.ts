@@ -47,4 +47,30 @@ eu 3 = N os ath ni H en AA`
       quantity: 2
     });
   });
+
+  it('prefers Halloren sku extraction from raw OCR text when multiple skus are visible', async () => {
+    const file = new File(['ignored'], 'halloren-packliste.jpeg', { type: 'image/jpeg' });
+    const ocrExtractor = vi.fn().mockResolvedValue({
+      text: `1 48286 Halloren Chocolate Thins Pistazie - 150g Beutel 1
+2 46862 Halloren Chocolate Thins Karamell - 150g
+Beutel
+2
+3 46824 Halloren Chocolate Thins Erdbeere - 150g
+Beutel
+2
+4 46848 Halloren Chocolate Thins Himbeere - 150g
+Beutel
+1
+5 40635 Royal Mints
+1`
+    });
+
+    const draft = await createOrderDraftFromImport({ file, ocrExtractor });
+
+    expect(draft.items).toHaveLength(5);
+    expect(draft.items.map((item) => item.sku)).toEqual(['48286', '46862', '46824', '46848', '40635']);
+    expect(draft.items[0]).toMatchObject({ name: 'Halloren Chocolate Thins Pistazie', quantity: 1 });
+    expect(draft.items[1]).toMatchObject({ name: 'Halloren Chocolate Thins Karamell', quantity: 2 });
+    expect(draft.items[4]).toMatchObject({ name: 'Royal Mints', quantity: 1 });
+  });
 });
