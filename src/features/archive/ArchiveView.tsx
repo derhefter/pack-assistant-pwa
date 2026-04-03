@@ -5,15 +5,16 @@ type Props = {
   archive: OrderRecord[];
   searchTerm: string;
   onSearchTermChange: (value: string) => void;
-  onRestore: (order: OrderRecord) => void;
+  selectedOrderId?: string;
+  onSelect: (order: OrderRecord) => void;
 };
 
-export function ArchiveView({ archive, searchTerm, onSearchTermChange, onRestore }: Props) {
+export function ArchiveView({ archive, searchTerm, onSearchTermChange, selectedOrderId, onSelect }: Props) {
   if (archive.length === 0) {
     return (
       <div className="archive-empty">
         <strong>Noch nichts archiviert.</strong>
-        <p>Fertige Auftraege landen hier und koennen spaeter wieder geoeffnet werden.</p>
+        <p>Abgeschlossene Auftraege erscheinen hier als reine Leseansicht.</p>
       </div>
     );
   }
@@ -30,7 +31,10 @@ export function ArchiveView({ archive, searchTerm, onSearchTermChange, onRestore
         />
       </label>
       {archive.map((order) => (
-        <article key={order.id} className="archive-item">
+        <article
+          key={order.id}
+          className={`archive-item ${selectedOrderId === order.id ? 'archive-item--active' : ''}`.trim()}
+        >
           <div>
             <strong>{order.title}</strong>
             <p>
@@ -38,8 +42,8 @@ export function ArchiveView({ archive, searchTerm, onSearchTermChange, onRestore
               {order.archivedAt ? ` - ${new Date(order.archivedAt).toLocaleDateString('de-DE')}` : ''}
             </p>
           </div>
-          <BigButton variant="ghost" onClick={() => onRestore(order)}>
-            Wieder oeffnen
+          <BigButton variant="ghost" onClick={() => onSelect(order)}>
+            Ansehen
           </BigButton>
         </article>
       ))}

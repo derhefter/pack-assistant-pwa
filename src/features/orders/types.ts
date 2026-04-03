@@ -22,5 +22,6 @@ export type OrderRecord = {
   sourceLabel: string;
   createdAt: string;
   archivedAt?: string;
+  status?: 'active' | 'archived';
   items: OrderItemCard[];
 };

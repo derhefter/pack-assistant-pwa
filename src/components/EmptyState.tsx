@@ -3,8 +3,8 @@ import { BigButton } from './BigButton';
 type Props = {
   title: string;
   description: string;
-  actionLabel: string;
-  onAction: () => void;
+  actionLabel?: string;
+  onAction?: () => void;
   tone?: 'default' | 'warning';
 };
 
@@ -13,7 +13,7 @@ export function EmptyState({ title, description, actionLabel, onAction, tone = '
     <div className={`empty-state empty-state--${tone}`}>
       <strong>{title}</strong>
       <p>{description}</p>
-      <BigButton onClick={onAction}>{actionLabel}</BigButton>
+      {actionLabel && onAction ? <BigButton onClick={onAction}>{actionLabel}</BigButton> : null}
     </div>
   );
 }

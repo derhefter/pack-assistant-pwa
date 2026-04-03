@@ -134,6 +134,7 @@ export function mapOrderRecord(
           : 'Text-Import',
     createdAt: order.createdAt,
     archivedAt: order.archivedAt,
+    status: order.status === 'archived' ? 'archived' : 'active',
     items: cards
   };
 }

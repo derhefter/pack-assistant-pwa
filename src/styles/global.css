@@ -90,6 +90,12 @@ textarea {
   box-shadow: var(--shadow);
 }
 
+.hero-headline {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
 .hero--compact {
   gap: 14px;
   padding: 18px 20px;
@@ -101,10 +107,9 @@ textarea {
 }
 
 .hero-brand {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  flex: 0 0 auto;
 }
 
 .hero-brand__logo {
@@ -124,11 +129,11 @@ textarea {
 }
 
 .hero h1 {
-  margin: 8px 0 10px;
+  margin: 0;
   font-size: clamp(2.1rem, 4.5vw, 3.4rem);
   line-height: 0.98;
   letter-spacing: -0.04em;
-  max-width: 14ch;
+  max-width: 11ch;
 }
 
 .hero p,
@@ -437,6 +442,10 @@ textarea {
   text-align: left;
 }
 
+.product-card__toggle:disabled {
+  cursor: default;
+}
+
 .product-card__badge {
   position: absolute;
   top: 12px;
@@ -522,6 +531,11 @@ textarea {
   background: rgba(255, 255, 255, 0.84);
 }
 
+.archive-item--active {
+  border-color: rgba(15, 91, 79, 0.3);
+  background: rgba(240, 248, 244, 0.96);
+}
+
 .archive-item strong {
   font-size: 1.05rem;
 }
@@ -529,6 +543,12 @@ textarea {
 .archive-item p {
   margin: 6px 0 0;
   color: var(--muted);
+}
+
+.archive-detail {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(18, 57, 48, 0.1);
 }
 
 .bullet-list {
@@ -572,7 +592,12 @@ textarea {
 
   .hero h1 {
     font-size: clamp(1.75rem, 8vw, 2.5rem);
-    max-width: 12ch;
+    max-width: none;
+  }
+
+  .hero-headline {
+    align-items: center;
+    gap: 12px;
   }
 
   .dashboard,

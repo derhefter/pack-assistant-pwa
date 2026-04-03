@@ -5,13 +5,15 @@ import type { OrderRecord } from './types';
 
 type Props = {
   order: OrderRecord;
-  onToggleItem: (itemId: string) => void;
-  onArchive: () => void;
-  onCaptureImage: (itemId: string, file: File) => void;
+  onToggleItem?: (itemId: string) => void;
+  onComplete?: () => void;
+  onCaptureImage?: (itemId: string, file: File) => void;
+  readOnly?: boolean;
 };
 
-export function OrderView({ order, onToggleItem, onArchive, onCaptureImage }: Props) {
+export function OrderView({ order, onToggleItem, onComplete, onCaptureImage, readOnly = false }: Props) {
   const packedCount = order.items.filter((item) => item.packed).length;
+  const allPacked = order.items.length > 0 && packedCount === order.items.length;
   const speech = useSpeech();
   const inputMap = useRef<Record<string, HTMLInputElement | null>>({});
 
@@ -25,14 +27,16 @@ export function OrderView({ order, onToggleItem, onArchive, onCaptureImage }: Pr
             {packedCount} von {order.items.length} Positionen gepackt
           </p>
         </div>
-        <BigButton variant="secondary" onClick={onArchive}>
-          Auftrag archivieren
-        </BigButton>
+        {!readOnly && allPacked && onComplete ? (
+          <BigButton variant="secondary" onClick={onComplete}>
+            Auftrag abschliessen
+          </BigButton>
+        ) : null}
       </header>
 
       <div className="order-grid">
         {order.items.map((item) => {
-          const hasCaptureAction = Boolean(item.productId && item.imageSource === 'placeholder');
+          const hasCaptureAction = Boolean(!readOnly && onCaptureImage && item.productId && item.imageSource === 'placeholder');
 
           return (
             <article key={item.id} className={`product-card ${item.packed ? 'product-card--done' : ''}`.trim()}>
@@ -40,7 +44,8 @@ export function OrderView({ order, onToggleItem, onArchive, onCaptureImage }: Pr
                 type="button"
                 className="product-card__toggle"
                 aria-pressed={item.packed}
-                onClick={() => onToggleItem(item.orderItemId)}
+                onClick={() => onToggleItem?.(item.orderItemId)}
+                disabled={readOnly || !onToggleItem}
               >
                 <div className="product-card__image">
                   <span className="product-card__badge">
@@ -83,9 +88,9 @@ export function OrderView({ order, onToggleItem, onArchive, onCaptureImage }: Pr
                       capture="environment"
                       onChange={(event) => {
                         const file = event.target.files?.[0];
-                        if (file) {
-                          onCaptureImage(item.orderItemId, file);
-                        }
+                          if (file && onCaptureImage) {
+                            onCaptureImage(item.orderItemId, file);
+                          }
                         event.target.value = '';
                       }}
                     />

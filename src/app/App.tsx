@@ -10,6 +10,7 @@ import {
   initializeLocalFirstStore,
   linkImageToProduct,
   listActiveOrders,
+  listArchivedOrders,
   listOrderItems,
   listProductAliases,
   listProductImages,
@@ -17,6 +18,7 @@ import {
   matchProductCandidate,
   toggleOrderItemChecked
 } from '../db';
+import { ArchiveView } from '../features/archive/ArchiveView';
 import { createOrderDraftFromImport } from '../features/import';
 import { mapOrderRecord } from '../features/orders/mappers';
 import { OrderView } from '../features/orders/OrderView';
@@ -55,19 +57,41 @@ export function App() {
   const activeOrderRef = useRef<HTMLElement | null>(null);
   const shouldScrollToOrderRef = useRef(false);
   const [currentOrder, setCurrentOrder] = useState<OrderRecord | null>(null);
-  const [message, setMessage] = useState<string | null>('Bereit fuer den ersten Auftrag.');
+  const [archiveOrders, setArchiveOrders] = useState<OrderRecord[]>([]);
+  const [selectedArchiveOrderId, setSelectedArchiveOrderId] = useState<string | null>(null);
+  const [archiveSearch, setArchiveSearch] = useState('');
+  const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [isBusy, setIsBusy] = useState(false);
 
   async function refreshWorkspace(preferredOrderId?: string) {
-    const [products, activeOrders, images] = await Promise.all([
+    const [products, activeOrders, archivedOrders, images] = await Promise.all([
       listProducts(),
       listActiveOrders(),
+      listArchivedOrders(),
       listProductImages()
     ]);
+    const mappedArchive = await Promise.all(
+      archivedOrders.map(async (order) => {
+        const items = await listOrderItems(order.id);
+        return mapOrderRecord(order, items, products, images);
+      })
+    );
 
     const current = activeOrders.find((order) => order.id === preferredOrderId) ?? activeOrders[0] ?? null;
+    setArchiveOrders(mappedArchive);
+    setSelectedArchiveOrderId((currentSelectedId) => {
+      if (!mappedArchive.length) {
+        return null;
+      }
+
+      if (currentSelectedId && mappedArchive.some((order) => order.id === currentSelectedId)) {
+        return currentSelectedId;
+      }
+
+      return mappedArchive[0]?.id ?? null;
+    });
 
     if (!current) {
       setCurrentOrder(null);
@@ -110,6 +134,17 @@ export function App() {
         total: currentOrder.items.length
       }
     : { done: 0, total: 0 };
+  const archiveSearchTerm = archiveSearch.trim().toLowerCase();
+  const filteredArchive = archiveOrders.filter((order) => {
+    if (!archiveSearchTerm) {
+      return true;
+    }
+
+    const haystack = `${order.title} ${order.items.map((item) => item.name).join(' ')}`.toLowerCase();
+    return haystack.includes(archiveSearchTerm);
+  });
+  const selectedArchiveOrder =
+    filteredArchive.find((order) => order.id === selectedArchiveOrderId) ?? filteredArchive[0] ?? null;
 
   async function saveDraftAsOrder(
     title: string,
@@ -204,13 +239,13 @@ export function App() {
     }
   };
 
-  const handleArchiveCurrent = async () => {
+  const handleCompleteCurrent = async () => {
     if (!currentOrder) {
       return;
     }
 
     await archiveOrder(currentOrder.id);
-    setMessage('Auftrag archiviert.');
+    setMessage('Auftrag abgeschlossen.');
     await refreshWorkspace();
   };
 
@@ -252,7 +287,7 @@ export function App() {
   return (
     <main className="app-shell">
       <section className={`hero ${currentOrder || isBusy ? 'hero--compact' : ''}`.trim()}>
-        <div>
+        <div className="hero-headline">
           <div className="hero-brand">
             <img src="/brand/logo-halloren.png" alt="Halloren Logo" className="hero-brand__logo" />
           </div>
@@ -329,17 +364,32 @@ export function App() {
             <OrderView
               order={currentOrder}
               onToggleItem={handleToggleItem}
-              onArchive={handleArchiveCurrent}
+              onComplete={handleCompleteCurrent}
               onCaptureImage={handleCaptureImage}
             />
           ) : (
             <EmptyState
               title="Noch kein Auftrag aktiv"
               description="Nutze oben Foto aufnehmen oder PDF laden."
-              actionLabel="Foto aufnehmen"
-              onAction={() => photoInputRef.current?.click()}
             />
           )}
+        </SectionCard>
+      </section>
+
+      <section>
+        <SectionCard title="Archiv" subtitle="Abgeschlossene Auftraege nur ansehen.">
+          <ArchiveView
+            archive={filteredArchive}
+            searchTerm={archiveSearch}
+            onSearchTermChange={setArchiveSearch}
+            selectedOrderId={selectedArchiveOrder?.id}
+            onSelect={(order) => setSelectedArchiveOrderId(order.id)}
+          />
+          {selectedArchiveOrder ? (
+            <div className="archive-detail">
+              <OrderView order={selectedArchiveOrder} readOnly />
+            </div>
+          ) : null}
         </SectionCard>
       </section>
     </main>
