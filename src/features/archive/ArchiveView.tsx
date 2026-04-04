@@ -3,13 +3,11 @@ import type { OrderRecord } from '../orders/types';
 
 type Props = {
   archive: OrderRecord[];
-  searchTerm: string;
-  onSearchTermChange: (value: string) => void;
   selectedOrderId?: string;
   onSelect: (order: OrderRecord) => void;
 };
 
-export function ArchiveView({ archive, searchTerm, onSearchTermChange, selectedOrderId, onSelect }: Props) {
+export function ArchiveView({ archive, selectedOrderId, onSelect }: Props) {
   if (archive.length === 0) {
     return (
       <div className="archive-empty">
@@ -21,15 +19,6 @@ export function ArchiveView({ archive, searchTerm, onSearchTermChange, selectedO
 
   return (
     <div className="archive-list">
-      <label className="archive-search">
-        <span>Archiv durchsuchen</span>
-        <input
-          type="search"
-          value={searchTerm}
-          placeholder="Titel oder Produkt"
-          onChange={(event) => onSearchTermChange(event.target.value)}
-        />
-      </label>
       {archive.map((order) => (
         <article
           key={order.id}

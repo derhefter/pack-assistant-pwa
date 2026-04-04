@@ -55,11 +55,12 @@ export function App() {
   const photoInputRef = useRef<HTMLInputElement | null>(null);
   const photoLibraryInputRef = useRef<HTMLInputElement | null>(null);
   const activeOrderRef = useRef<HTMLElement | null>(null);
+  const archiveDetailRef = useRef<HTMLDivElement | null>(null);
   const shouldScrollToOrderRef = useRef(false);
+  const shouldScrollToArchiveDetailRef = useRef(false);
   const [currentOrder, setCurrentOrder] = useState<OrderRecord | null>(null);
   const [archiveOrders, setArchiveOrders] = useState<OrderRecord[]>([]);
   const [selectedArchiveOrderId, setSelectedArchiveOrderId] = useState<string | null>(null);
-  const [archiveSearch, setArchiveSearch] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
@@ -128,23 +129,28 @@ export function App() {
     }, 120);
   }, [currentOrder]);
 
+  useEffect(() => {
+    if (!selectedArchiveOrderId || !shouldScrollToArchiveDetailRef.current) {
+      return;
+    }
+
+    shouldScrollToArchiveDetailRef.current = false;
+    window.setTimeout(() => {
+      archiveDetailRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 120);
+  }, [selectedArchiveOrderId]);
+
   const progress = currentOrder
     ? {
         done: currentOrder.items.filter((item) => item.packed).length,
         total: currentOrder.items.length
       }
     : { done: 0, total: 0 };
-  const archiveSearchTerm = archiveSearch.trim().toLowerCase();
-  const filteredArchive = archiveOrders.filter((order) => {
-    if (!archiveSearchTerm) {
-      return true;
-    }
-
-    const haystack = `${order.title} ${order.items.map((item) => item.name).join(' ')}`.toLowerCase();
-    return haystack.includes(archiveSearchTerm);
-  });
   const selectedArchiveOrder =
-    filteredArchive.find((order) => order.id === selectedArchiveOrderId) ?? filteredArchive[0] ?? null;
+    archiveOrders.find((order) => order.id === selectedArchiveOrderId) ?? archiveOrders[0] ?? null;
 
   async function saveDraftAsOrder(
     title: string,
@@ -379,14 +385,15 @@ export function App() {
       <section>
         <SectionCard title="Archiv" subtitle="Abgeschlossene Auftraege nur ansehen.">
           <ArchiveView
-            archive={filteredArchive}
-            searchTerm={archiveSearch}
-            onSearchTermChange={setArchiveSearch}
+            archive={archiveOrders}
             selectedOrderId={selectedArchiveOrder?.id}
-            onSelect={(order) => setSelectedArchiveOrderId(order.id)}
+            onSelect={(order) => {
+              shouldScrollToArchiveDetailRef.current = true;
+              setSelectedArchiveOrderId(order.id);
+            }}
           />
           {selectedArchiveOrder ? (
-            <div className="archive-detail">
+            <div ref={archiveDetailRef} className="archive-detail">
               <OrderView order={selectedArchiveOrder} readOnly />
             </div>
           ) : null}

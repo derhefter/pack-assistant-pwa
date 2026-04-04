@@ -69,6 +69,7 @@ textarea {
   width: min(1180px, calc(100vw - 24px));
   margin: 0 auto;
   padding: 16px 0 28px;
+  overflow-x: clip;
 }
 
 .hero,
@@ -231,6 +232,7 @@ textarea {
   border: 1px solid rgba(15, 91, 79, 0.15);
   background: rgba(255, 255, 255, 0.82);
   color: var(--primary-strong);
+  overflow-wrap: anywhere;
 }
 
 .status-banner--error {
@@ -373,10 +375,15 @@ textarea {
   gap: 16px;
 }
 
+.order-view__header > div {
+  min-width: 0;
+}
+
 .order-view__header h2 {
   margin: 8px 0 6px;
   font-size: 1.8rem;
   line-height: 1;
+  overflow-wrap: anywhere;
 }
 
 .order-view__header p {
@@ -482,6 +489,7 @@ textarea {
   line-height: 1.2;
   min-height: 2.7em;
   overflow: hidden;
+  overflow-wrap: anywhere;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
@@ -531,6 +539,10 @@ textarea {
   background: rgba(255, 255, 255, 0.84);
 }
 
+.archive-item > div {
+  min-width: 0;
+}
+
 .archive-item--active {
   border-color: rgba(15, 91, 79, 0.3);
   background: rgba(240, 248, 244, 0.96);
@@ -538,6 +550,7 @@ textarea {
 
 .archive-item strong {
   font-size: 1.05rem;
+  overflow-wrap: anywhere;
 }
 
 .archive-item p {
