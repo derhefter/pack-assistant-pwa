@@ -6,6 +6,7 @@ import { SectionCard } from '../components/SectionCard';
 import {
   archiveOrder,
   createOrderWithItems,
+  deleteArchivedOrder,
   getBestProductImage,
   initializeLocalFirstStore,
   linkImageToProduct,
@@ -285,6 +286,16 @@ export function App() {
     setMessage('Auftragsname aktualisiert.');
   };
 
+  const handleDeleteArchived = async () => {
+    if (!selectedArchiveOrder) {
+      return;
+    }
+
+    await deleteArchivedOrder(selectedArchiveOrder.id);
+    setMessage('Archivierter Auftrag geloescht.');
+    await refreshWorkspace(currentOrder?.id);
+  };
+
   const handleCaptureImage = async (orderItemId: string, file: File) => {
     if (!currentOrder) {
       return;
@@ -463,7 +474,11 @@ export function App() {
           />
           {selectedArchiveOrder ? (
             <div ref={archiveDetailRef} className="archive-detail">
-              <OrderView order={selectedArchiveOrder} readOnly />
+              <OrderView
+                order={selectedArchiveOrder}
+                readOnly
+                onDeleteArchived={handleDeleteArchived}
+              />
             </div>
           ) : null}
         </SectionCard>

@@ -298,6 +298,24 @@ export async function archiveOrder(orderId: string, reason?: string) {
   return archiveRecord;
 }
 
+export async function deleteArchivedOrder(orderId: string) {
+  const order = await db.orders.get(orderId);
+  if (!order || order.status !== 'archived') {
+    return false;
+  }
+
+  await db.transaction('rw', db.orders, db.orderItems, db.archive, async () => {
+    await db.orderItems.where('orderId').equals(orderId).delete();
+
+    const archiveEntries = await db.archive.where('orderId').equals(orderId).toArray();
+    await Promise.all(archiveEntries.map((entry) => db.archive.delete(entry.id)));
+
+    await db.orders.delete(orderId);
+  });
+
+  return true;
+}
+
 export async function listOrders() {
   return db.orders.orderBy('updatedAt').reverse().toArray();
 }

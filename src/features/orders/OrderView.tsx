@@ -9,10 +9,19 @@ type Props = {
   onComplete?: () => void;
   onCaptureImage?: (itemId: string, file: File) => void;
   onRenameOrder?: (title: string) => void;
+  onDeleteArchived?: () => void;
   readOnly?: boolean;
 };
 
-export function OrderView({ order, onToggleItem, onComplete, onCaptureImage, onRenameOrder, readOnly = false }: Props) {
+export function OrderView({
+  order,
+  onToggleItem,
+  onComplete,
+  onCaptureImage,
+  onRenameOrder,
+  onDeleteArchived,
+  readOnly = false
+}: Props) {
   const packedCount = order.items.filter((item) => item.packed).length;
   const allPacked = order.items.length > 0 && packedCount === order.items.length;
   const speech = useSpeech();
@@ -46,6 +55,11 @@ export function OrderView({ order, onToggleItem, onComplete, onCaptureImage, onR
             {packedCount} von {order.items.length} Positionen gepackt
           </p>
         </div>
+        {readOnly && onDeleteArchived ? (
+          <BigButton variant="danger" onClick={onDeleteArchived}>
+            Archivauftrag loeschen
+          </BigButton>
+        ) : null}
         {!readOnly && allPacked && onComplete ? (
           <BigButton variant="danger" onClick={onComplete}>
             Auftrag abschliessen
