@@ -27,7 +27,8 @@ function guessExtension(contentType?: string, fileName?: string) {
 }
 
 function extractTimestampFromPath(pathname: string) {
-  const fileName = pathname.split('/').at(-1) ?? '';
+  const segments = pathname.split('/');
+  const fileName = segments[segments.length - 1] ?? '';
   const match = fileName.match(/^(?<stamp>\d{14})-/);
   if (!match?.groups?.stamp) {
     return new Date(0).toISOString();
@@ -70,7 +71,13 @@ async function listLatestImagesForSkus(skus: string[]) {
 
 export default async function handler(request: Request) {
   try {
+    const readWriteToken = process.env.BLOB_READ_WRITE_TOKEN;
+
     if (request.method === 'GET') {
+      if (!readWriteToken) {
+        return Response.json({ images: [], configured: false });
+      }
+
       const { searchParams } = new URL(request.url);
       const skus = (searchParams.get('skus') ?? '')
         .split(',')
@@ -81,10 +88,14 @@ export default async function handler(request: Request) {
         return Response.json({ images: [] });
       }
 
-      return Response.json({ images: await listLatestImagesForSkus(skus) });
+      return Response.json({ images: await listLatestImagesForSkus(skus), configured: true });
     }
 
     if (request.method === 'POST') {
+      if (!readWriteToken) {
+        return Response.json({ error: 'Blob-Store ist noch nicht mit dem Projekt verknuepft.' }, { status: 503 });
+      }
+
       const formData = await request.formData();
       const file = formData.get('file');
       const sku = normalizeSku(formData.get('sku'));
@@ -117,7 +128,7 @@ export default async function handler(request: Request) {
           sku,
           url: blob.url,
           pathname: blob.pathname,
-          fileName: blob.pathname.split('/').at(-1),
+          fileName: blob.pathname.split('/').slice(-1)[0],
           contentType: file.type || undefined,
           uploadedAt: now.toISOString()
         }
