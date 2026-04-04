@@ -16,6 +16,7 @@ import {
   listProductImages,
   listProducts,
   matchProductCandidate,
+  updateOrderTitle,
   toggleOrderItemChecked
 } from '../db';
 import { ArchiveView } from '../features/archive/ArchiveView';
@@ -274,6 +275,16 @@ export function App() {
     await refreshWorkspace();
   };
 
+  const handleRenameCurrent = async (title: string) => {
+    if (!currentOrder) {
+      return;
+    }
+
+    await updateOrderTitle(currentOrder.id, title);
+    await refreshWorkspace(currentOrder.id);
+    setMessage('Auftragsname aktualisiert.');
+  };
+
   const handleCaptureImage = async (orderItemId: string, file: File) => {
     if (!currentOrder) {
       return;
@@ -415,7 +426,7 @@ export function App() {
       </div>
 
       <section ref={activeOrderRef}>
-        <SectionCard title="Aktiver Auftrag" subtitle="Gross, klar, mit Audio.">
+        <SectionCard title="Aktiver Auftrag">
           {isBusy && !currentOrder ? (
             <EmptyState
               title="Import laeuft"
@@ -429,6 +440,7 @@ export function App() {
               onToggleItem={handleToggleItem}
               onComplete={handleCompleteCurrent}
               onCaptureImage={handleCaptureImage}
+              onRenameOrder={handleRenameCurrent}
             />
           ) : (
             <EmptyState
@@ -440,7 +452,7 @@ export function App() {
       </section>
 
       <section>
-        <SectionCard title="Archiv" subtitle="Abgeschlossene Auftraege nur ansehen.">
+        <SectionCard title="Archiv">
           <ArchiveView
             archive={archiveOrders}
             selectedOrderId={selectedArchiveOrder?.id}

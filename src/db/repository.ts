@@ -260,6 +260,19 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
   return db.orders.get(orderId);
 }
 
+export async function updateOrderTitle(orderId: string, title: string) {
+  const trimmed = title.trim();
+  if (!trimmed) {
+    return db.orders.get(orderId);
+  }
+
+  await db.orders.update(orderId, {
+    title: trimmed,
+    updatedAt: nowIso()
+  });
+  return db.orders.get(orderId);
+}
+
 export async function archiveOrder(orderId: string, reason?: string) {
   const archivedAt = nowIso();
   const order = await db.orders.get(orderId);

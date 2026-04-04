@@ -8,10 +8,11 @@ type Props = {
   onToggleItem?: (itemId: string) => void;
   onComplete?: () => void;
   onCaptureImage?: (itemId: string, file: File) => void;
+  onRenameOrder?: (title: string) => void;
   readOnly?: boolean;
 };
 
-export function OrderView({ order, onToggleItem, onComplete, onCaptureImage, readOnly = false }: Props) {
+export function OrderView({ order, onToggleItem, onComplete, onCaptureImage, onRenameOrder, readOnly = false }: Props) {
   const packedCount = order.items.filter((item) => item.packed).length;
   const allPacked = order.items.length > 0 && packedCount === order.items.length;
   const speech = useSpeech();
@@ -22,13 +23,31 @@ export function OrderView({ order, onToggleItem, onComplete, onCaptureImage, rea
       <header className="order-view__header">
         <div>
           <span className="eyebrow">{order.sourceLabel}</span>
-          <h2>{order.title}</h2>
+          {readOnly ? (
+            <h2>{order.title}</h2>
+          ) : (
+            <input
+              key={order.id}
+              className="order-view__title-input"
+              type="text"
+              defaultValue={order.title}
+              aria-label="Auftragsname"
+              onBlur={(event) => {
+                const trimmed = event.currentTarget.value.trim();
+                if (trimmed && trimmed !== order.title) {
+                  onRenameOrder?.(trimmed);
+                } else {
+                  event.currentTarget.value = order.title;
+                }
+              }}
+            />
+          )}
           <p>
             {packedCount} von {order.items.length} Positionen gepackt
           </p>
         </div>
         {!readOnly && allPacked && onComplete ? (
-          <BigButton variant="secondary" onClick={onComplete}>
+          <BigButton variant="danger" onClick={onComplete}>
             Auftrag abschliessen
           </BigButton>
         ) : null}

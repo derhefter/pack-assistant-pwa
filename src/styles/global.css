@@ -314,6 +314,13 @@ textarea {
   border-color: rgba(18, 57, 48, 0.1);
 }
 
+.big-button--danger {
+  background: linear-gradient(180deg, #d55b4a, #b13f33);
+  color: #fff7f3;
+  border-color: rgba(138, 38, 28, 0.3);
+  box-shadow: 0 14px 26px rgba(177, 79, 50, 0.24);
+}
+
 .file-dropzone,
 .manual-import,
 .empty-state,
@@ -384,6 +391,25 @@ textarea {
   font-size: 1.8rem;
   line-height: 1;
   overflow-wrap: anywhere;
+}
+
+.order-view__title-input {
+  width: 100%;
+  margin: 8px 0 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #12342d;
+  font-size: 1.8rem;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+
+.order-view__title-input:focus {
+  outline: none;
+  box-shadow: inset 0 -2px 0 rgba(15, 91, 79, 0.32);
 }
 
 .order-view__header p {
@@ -533,10 +559,12 @@ textarea {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  width: 100%;
   padding: 16px 18px;
   border-radius: 22px;
   border: 1px solid rgba(18, 57, 48, 0.12);
   background: rgba(255, 255, 255, 0.84);
+  text-align: left;
 }
 
 .archive-item > div {
@@ -622,8 +650,7 @@ textarea {
     display: none;
   }
 
-  .big-button,
-  .archive-item button {
+  .big-button {
     min-height: 54px;
     width: 100%;
   }

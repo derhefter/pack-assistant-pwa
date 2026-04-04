@@ -1,4 +1,3 @@
-import { BigButton } from '../../components/BigButton';
 import type { OrderRecord } from '../orders/types';
 
 type Props = {
@@ -20,9 +19,11 @@ export function ArchiveView({ archive, selectedOrderId, onSelect }: Props) {
   return (
     <div className="archive-list">
       {archive.map((order) => (
-        <article
+        <button
+          type="button"
           key={order.id}
           className={`archive-item ${selectedOrderId === order.id ? 'archive-item--active' : ''}`.trim()}
+          onClick={() => onSelect(order)}
         >
           <div>
             <strong>{order.title}</strong>
@@ -31,10 +32,7 @@ export function ArchiveView({ archive, selectedOrderId, onSelect }: Props) {
               {order.archivedAt ? ` - ${new Date(order.archivedAt).toLocaleDateString('de-DE')}` : ''}
             </p>
           </div>
-          <BigButton variant="ghost" onClick={() => onSelect(order)}>
-            Ansehen
-          </BigButton>
-        </article>
+        </button>
       ))}
     </div>
   );
