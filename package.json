@@ -16,6 +16,7 @@
     "check": "npm.cmd run lint && npm.cmd run test"
   },
   "dependencies": {
+    "@vercel/blob": "^2.3.3",
     "dexie": "^4.2.1",
     "pdfjs-dist": "^5.4.296",
     "react": "^19.2.0",

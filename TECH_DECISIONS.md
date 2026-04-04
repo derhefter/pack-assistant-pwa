@@ -50,3 +50,18 @@
 - Empfehlung: auf kleinen Displays horizontale Karten statt hoher Bildkacheln
 - Grund: mehr Produkte gleichzeitig sichtbar, weniger Scrollen, weniger Ueberforderung
 - Umsetzung: unter `640px` Bild links, Text rechts, Buttons in einer klaren Aktionszeile
+
+## 10. Zentraler Bildsync laeuft im selben Vercel-Projekt
+
+- Empfehlung: `Vercel Blob` im bestehenden Projekt statt GitHub als operative Bilddatenbank
+- Grund:
+  - GitHub ist stark fuer versionierte Seeds, aber unpassend fuer Laufzeit-Uploads von Handybildern
+  - Blob passt direkt zu Vercel Functions und laesst sich ohne zweite Plattform anbinden
+  - Die App bleibt local-first, weil IndexedDB lokal weiter die erste Instanz bleibt
+- Umsetzung:
+  - lokale Speicherung sofort
+  - optionaler Upload nach `/api/product-images`
+  - zentrale Bilder werden spaeter beim Start wieder in IndexedDB synchronisiert
+- Trade-off:
+  - nicht mehr rein offline fuer den Mehrgeraete-Sync
+  - dafuer deutlich einfacher als ein eigenes Backend plus relationale Bilddatenbank

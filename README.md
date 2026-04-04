@@ -41,6 +41,14 @@ npm install
 npm run dev
 ```
 
+## Zentraler Bildsync mit Vercel Blob
+
+- Lokale Fotos bleiben weiter zuerst in IndexedDB gespeichert.
+- Optional koennen manuell aufgenommene Produktbilder zusaetzlich zentral ueber Vercel Blob gesichert werden.
+- Dafuer im gleichen Vercel-Projekt einen `Blob` Store anlegen und dem Projekt die automatisch gesetzten Umgebungsvariablen geben.
+- Danach laufen Upload und spaeterer Sync fuer andere Geraete ueber den Endpunkt `/api/product-images`.
+- Ohne Blob-Konfiguration bleibt die App weiter lokal nutzbar. Der zentrale Sync faellt dann nur still weg.
+
 Dann im Browser:
 
 1. `PDF waehlen` oder `Foto waehlen`
@@ -77,8 +85,8 @@ Outputs:
 
 ## MVP-Grenzen
 
-- Kein Backend, kein Sync
-- Kamera speichert Bilder lokal in IndexedDB als Data URL
+- Die App bleibt local-first; zentrale Bildsynchronisation braucht einen konfigurierten Vercel Blob Store
+- Kamera speichert Bilder lokal in IndexedDB als Data URL und versucht online zusaetzlich den zentralen Upload
 - OCR-Qualitaet haengt von Bildqualitaet und Browserleistung ab
 - Playwright braucht lokal installierte Browser
 

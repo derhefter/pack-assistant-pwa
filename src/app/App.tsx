@@ -22,6 +22,7 @@ import { ArchiveView } from '../features/archive/ArchiveView';
 import { createOrderDraftFromImport } from '../features/import';
 import { mapOrderRecord } from '../features/orders/mappers';
 import { OrderView } from '../features/orders/OrderView';
+import { syncCentralProductImages, uploadCentralProductImage } from '../features/products';
 import { normalizeSku } from '../lib/domain';
 import { prepareCapturedImage } from '../lib/imageCapture';
 import type { ImportMode, OrderRecord } from '../features/orders/types';
@@ -142,6 +143,24 @@ export function App() {
       });
     }, 120);
   }, [selectedArchiveOrderId]);
+
+  useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+
+    void (async () => {
+      try {
+        const products = await listProducts();
+        const syncedCount = await syncCentralProductImages(products);
+        if (syncedCount > 0) {
+          await refreshWorkspace(currentOrder?.id);
+        }
+      } catch {
+        // Zentrale Synchronisation ist optional und darf den lokalen Start nicht stoeren.
+      }
+    })();
+  }, [currentOrder?.id, isReady]);
 
   const progress = currentOrder
     ? {
@@ -285,8 +304,46 @@ export function App() {
       note: existingBest ? 'Manuell ersetzt vorhandenes Bild.' : 'Erstes manuelles Bild.'
     });
 
+    let centralSyncCompleted = false;
+    if (item.sku) {
+      try {
+        const centralImage = await uploadCentralProductImage({
+          sku: item.sku,
+          productName: item.name,
+          dataUrl: preparedImage.dataUrl,
+          mimeType: preparedImage.mimeType,
+          hash: `${file.name}-${file.size}-${file.lastModified}`
+        });
+
+        if (centralImage?.url) {
+          await linkImageToProduct(item.productId, {
+            source: 'manual',
+            url: centralImage.url,
+            fileName: centralImage.fileName,
+            alt: `${item.name} zentral gesichert`,
+            mimeType: centralImage.contentType ?? preparedImage.mimeType,
+            isPrimary: false,
+            hash: `central:${centralImage.pathname}`,
+            captureSource: 'sync',
+            confidence: 0.94,
+            thumbUrl: centralImage.url,
+            width: preparedImage.width,
+            height: preparedImage.height,
+            note: 'Manuelles Bild zusaetzlich zentral synchronisiert.'
+          });
+          centralSyncCompleted = true;
+        }
+      } catch {
+        centralSyncCompleted = false;
+      }
+    }
+
     await refreshWorkspace(currentOrder.id);
-    setMessage(`Bild fuer ${item.name} gespeichert.`);
+    setMessage(
+      centralSyncCompleted
+        ? `Bild fuer ${item.name} gespeichert und zentral gesichert.`
+        : `Bild fuer ${item.name} gespeichert.`
+    );
     setError(null);
   };
 
