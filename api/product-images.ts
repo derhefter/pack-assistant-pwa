@@ -69,6 +69,23 @@ async function listLatestImagesForSkus(skus: string[]) {
   return images.filter(Boolean);
 }
 
+async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, fallbackValue: T): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<T>((resolve) => {
+        timeoutId = setTimeout(() => resolve(fallbackValue), timeoutMs);
+      })
+    ]);
+  } finally {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  }
+}
+
 export default async function handler(request: Request) {
   try {
     const readWriteToken = process.env.BLOB_READ_WRITE_TOKEN;
@@ -88,7 +105,8 @@ export default async function handler(request: Request) {
         return Response.json({ images: [] });
       }
 
-      return Response.json({ images: await listLatestImagesForSkus(skus), configured: true });
+      const images = await withTimeout(listLatestImagesForSkus(skus), 2500, []);
+      return Response.json({ images, configured: true });
     }
 
     if (request.method === 'POST') {

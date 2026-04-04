@@ -33,12 +33,21 @@ async function requestCentralImages(products: Product[]) {
     return [];
   }
 
-  const response = await fetch(`/api/product-images?skus=${encodeURIComponent(skus.join(','))}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json'
-    }
-  });
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 3000);
+
+  let response: Response;
+  try {
+    response = await fetch(`/api/product-images?skus=${encodeURIComponent(skus.join(','))}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json'
+      },
+      signal: controller.signal
+    });
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
 
   if (!response.ok) {
     throw new Error('Zentrale Bildliste konnte nicht geladen werden.');
